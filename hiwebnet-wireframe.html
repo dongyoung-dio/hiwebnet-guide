@@ -174,7 +174,7 @@
             <div class="stepper">
               <div class="stp done"><span class="ic">✓</span><span class="tx">신청 접수</span></div>
               <div class="vline"></div>
-              <div class="stp active"><span class="ic">●</span><span class="tx">검토<small>검수 + 청구, 재시도 중 (최대 5회)</small></span></div>
+              <div class="stp active"><span class="ic">●</span><span class="tx">검토</span></div>
               <div class="vline"></div>
               <div class="stp future"><span class="ic"></span><span class="tx">서류발급중</span></div>
               <div class="vline"></div>
@@ -185,7 +185,7 @@
           </div>
         </div>
       </div>
-      <p class="desc">재시도 도는 동안 '검토' 유지 (서류발급은 하이웹넷 성공 후 시작). 대부분 자동 매핑, 표기 검증.</p>
+      <p class="desc">기존 진행현황 화면 그대로 (신규 화면 없음). 청구 진행 중 '검토'로 표시되는지 검증 (progressStage=REVIEW 자동 매핑).</p>
     </div>
 
     <!-- C-4 -->
@@ -197,22 +197,15 @@
           <div class="screen-body">
             <div class="reccard">
               <div class="top">
-                <div><div class="nm">○○정형외과의원</div><div class="meta">2026.06.20 진료 / 전용건 최종실패</div></div>
+                <div><div class="nm">○○정형외과의원</div><div class="meta">2026.06.20 진료</div></div>
                 <span class="statebadge sb-fail">환불 완료</span>
               </div>
-              <div class="reapply">재신청 (익일부터 가능)</div>
-            </div>
-            <div class="reccard">
-              <div class="top">
-                <div><div class="nm">△△내과의원</div><div class="meta">2026.06.28 진료 / 전용건 최종실패</div></div>
-                <span class="statebadge sb-fail">환불 완료</span>
-              </div>
-              <div class="reapply disabled">재신청 불가 (당일 제한)</div>
+              <div class="reapply">재신청</div>
             </div>
           </div>
         </div>
       </div>
-      <p class="desc">전용건 최종실패는 익일부터 재신청 버튼 활성. 당일은 불가. 일반건 서류발급실패는 영구 불가(변화 없음).</p>
+      <p class="desc">기존 '재신청 불가' 표시가 풀려 '재신청' 버튼 노출. 화면엔 버튼만, 노출 조건은 기획서 3-11 참조.</p>
     </div>
 
   </div>
@@ -300,9 +293,8 @@
             <tr><td>신청 상태</td><td>서류발급실패</td></tr>
             <tr><td>실패 사유</td><td><span class="lab-fail">하이웹넷청구불가</span></td></tr>
             <tr><td>전용 여부</td><td><span class="badge-only">전용건</span></td></tr>
-            <tr><td>재신청</td><td>익일부터 가능</td></tr>
           </table>
-          <div class="annot edit">사유 라벨로 "왜 실패, 재신청 되는지" 한눈에. CX 회원관리 상세 플래그 매핑 보강 대상.</div>
+          <div class="annot edit">사유 라벨로 일반 서류발급실패와 구분. CX 회원관리 상세 플래그 매핑 보강 대상.</div>
         </div>
       </div>
       <p class="desc">최종실패 전용건은 사유 '하이웹넷청구불가'로 일반 서류발급실패와 구분.</p>
