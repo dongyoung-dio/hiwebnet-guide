@@ -15,7 +15,7 @@
     font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Pretendard",sans-serif;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--txt);line-height:1.65;-webkit-font-smoothing:antialiased}
+  body{margin:0;background:var(--bg);color:var(--txt);line-height:1.65;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
   a{color:var(--accent)}
   .wrap{display:flex;max-width:1280px;margin:0 auto}
   /* nav */
@@ -278,9 +278,9 @@
   <h3>각 조건을 왜 보는가</h3>
   <table>
     <tr><th>조건</th><th>꺼지면</th><th>이유</th></tr>
-    <tr><td>① 스위치</td><td>전체 전용건 즉시 차단</td><td>시스템 문제 생기면 운영이 바로 끌 수 있는 비상 스위치. <b>끄면 바로 반영(기다림 없음)</b></td></tr>
-    <tr><td>② 보험사</td><td>해당 고객에게 전용건 미노출</td><td>하이웹넷 비대상 보험사면 청구가 <b>100% 확정 실패</b> → 받지 않는 게 맞음 (상반기 기준 비대상 약 17%)</td></tr>
-    <tr><td>③ 병약국</td><td>그 병약국만 미노출</td><td>매일 병약국 목록 조회에서 그 병약국이 빠짐(폐업, 영업종료 등) 또는 운영자 수동 차단 → 비가용. ※ PC 다운, 영수증 조회 실패는 실제 청구 시점의 별개 문제</td></tr>
+    <tr><td>①&nbsp;스위치</td><td>전체 전용건 즉시 차단</td><td>시스템 문제 생기면 운영이 바로 끌 수 있는 비상 스위치. <b>끄면 바로 반영(기다림 없음)</b></td></tr>
+    <tr><td>②&nbsp;보험사</td><td>해당 고객에게 전용건 미노출</td><td>하이웹넷 비대상 보험사면 청구가 <b>100% 확정 실패</b> → 받지 않는 게 맞음 (상반기 기준 비대상 약 17%)</td></tr>
+    <tr><td>③&nbsp;병약국</td><td>그 병약국만 미노출</td><td>매일 병약국 목록 조회에서 그 병약국이 빠짐(폐업, 영업종료 등) 또는 운영자 수동 차단 → 비가용. ※ PC 다운, 영수증 조회 실패는 실제 청구 시점의 별개 문제</td></tr>
   </table>
 </section>
 
