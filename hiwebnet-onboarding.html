@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>하이웹넷 전용건 — 온보딩 가이드</title>
+<style>
+  :root{
+    --bg:#0e1116; --panel:#161b22; --panel2:#1c232d; --line:#2a3340;
+    --txt:#e6edf3; --mut:#9aa7b5; --dim:#6e7c8c;
+    --accent:#5ec8d8; --accent2:#7c8cff; --only:#a06bff;
+    --ok:#41d18f; --warn:#ffb454; --bad:#ff6b6b;
+    --chip:#222b36;
+    --radius:14px;
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Pretendard",sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent)}
+  .wrap{display:flex;max-width:1280px;margin:0 auto}
+  /* nav */
+  nav{position:sticky;top:0;align-self:flex-start;height:100vh;width:240px;flex:0 0 240px;
+    padding:26px 16px;border-right:1px solid var(--line);overflow-y:auto;background:#0c0f14}
+  nav .brand{font-weight:800;font-size:15px;letter-spacing:.3px;margin-bottom:4px}
+  nav .brand span{color:var(--only)}
+  nav .sub{color:var(--dim);font-size:11.5px;margin-bottom:20px}
+  nav a{display:block;color:var(--mut);text-decoration:none;font-size:13px;padding:7px 11px;border-radius:9px;margin-bottom:2px;transition:.15s}
+  nav a:hover{background:var(--panel2);color:var(--txt)}
+  nav a.active{background:linear-gradient(90deg,rgba(160,107,255,.18),transparent);color:#fff;font-weight:600}
+  nav a .n{display:inline-block;width:20px;color:var(--dim);font-variant-numeric:tabular-nums}
+  /* content */
+  main{flex:1;min-width:0;padding:40px 48px 120px}
+  section{scroll-margin-top:24px;padding:34px 0;border-bottom:1px solid var(--line)}
+  section:last-child{border-bottom:none}
+  h1{font-size:30px;margin:0 0 8px;font-weight:800;letter-spacing:-.5px}
+  h2{font-size:21px;margin:0 0 16px;font-weight:750;letter-spacing:-.3px;display:flex;align-items:center;gap:10px}
+  h2 .badge{font-size:11px;font-weight:700;color:var(--bg);background:var(--accent);padding:2px 9px;border-radius:20px}
+  h3{font-size:15px;margin:22px 0 9px;color:var(--accent);font-weight:700}
+  p{margin:10px 0;color:#d3dde7}
+  .lead{font-size:15.5px;color:var(--mut)}
+  .muted{color:var(--mut)}
+  .small{font-size:12.5px;color:var(--dim)}
+  code{background:#0b0e13;border:1px solid var(--line);padding:1px 6px;border-radius:6px;font-size:12.5px;color:#b9c6d3;font-family:"SF Mono",ui-monospace,Menlo,monospace}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin:14px 0}
+  .grid{display:grid;gap:14px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr 1fr 1fr}
+  @media(max-width:900px){.g2,.g3{grid-template-columns:1fr}}
+  .pill{display:inline-block;font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:30px;background:var(--chip);color:var(--mut);border:1px solid var(--line)}
+  .pill.only{background:rgba(160,107,255,.14);color:#c4a4ff;border-color:rgba(160,107,255,.35)}
+  .pill.ok{background:rgba(65,209,143,.13);color:var(--ok);border-color:rgba(65,209,143,.3)}
+  .pill.bad{background:rgba(255,107,107,.12);color:var(--bad);border-color:rgba(255,107,107,.3)}
+  .pill.warn{background:rgba(255,180,84,.12);color:var(--warn);border-color:rgba(255,180,84,.3)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--mut);font-weight:600;font-size:12px;text-transform:none;background:var(--panel2)}
+  tr:hover td{background:rgba(255,255,255,.015)}
+  .kpi{display:flex;gap:14px;flex-wrap:wrap}
+  .kpi .box{flex:1;min-width:150px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+  .kpi .num{font-size:26px;font-weight:800;letter-spacing:-.5px}
+  .kpi .lbl{font-size:12px;color:var(--mut);margin-top:3px}
+  .callout{border-left:3px solid var(--accent2);background:rgba(124,140,255,.07);padding:13px 16px;border-radius:0 10px 10px 0;margin:14px 0;font-size:13.5px}
+  .callout.warn{border-color:var(--warn);background:rgba(255,180,84,.07)}
+  .callout.only{border-color:var(--only);background:rgba(160,107,255,.08)}
+  .tag{font-size:11px;color:var(--dim)}
+  /* simulator */
+  .sim{background:linear-gradient(180deg,#1a2230,#141a23);border:1px solid var(--line);border-radius:18px;padding:24px}
+  .toggles{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 20px}
+  .tg{flex:1;min-width:180px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;user-select:none;transition:.18s}
+  .tg:hover{border-color:var(--accent2)}
+  .tg .tt{font-size:13.5px;font-weight:700;margin-bottom:3px}
+  .tg .td{font-size:11.5px;color:var(--dim);line-height:1.45}
+  .tg .sw{margin-top:10px;display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700}
+  .dot{width:34px;height:19px;border-radius:20px;background:#39424f;position:relative;transition:.18s}
+  .dot::after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#8795a3;transition:.18s}
+  .tg.on .dot{background:rgba(65,209,143,.5)}
+  .tg.on .dot::after{left:17px;background:var(--ok)}
+  .tg.on{border-color:rgba(65,209,143,.4)}
+  .tg .sw .s-on{color:var(--ok)} .tg .sw .s-off{color:var(--dim)}
+  .result{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:14px;font-weight:700;transition:.2s}
+  .result.show{background:rgba(65,209,143,.12);border:1px solid rgba(65,209,143,.4)}
+  .result.hide{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.35)}
+  .result .ic{font-size:26px}
+  .result .rt{font-size:16px}
+  .result .rd{font-size:12.5px;font-weight:500;color:var(--mut);margin-top:2px}
+  .note-pre{font-size:12px;color:var(--dim);margin-top:10px}
+  /* flow */
+  .flow{overflow-x:auto;padding:6px 0}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:8px 0 4px}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  /* case tabs */
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .tab{padding:9px 15px;border-radius:10px;background:var(--panel);border:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:600;color:var(--mut);transition:.15s}
+  .tab:hover{color:var(--txt)}
+  .tab.active{background:var(--only);color:#fff;border-color:var(--only)}
+  .case{display:none;animation:fade .25s}
+  .case.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .steps{counter-reset:s;margin:6px 0}
+  .steps .st{position:relative;padding:8px 0 8px 38px;border-left:2px solid var(--line);margin-left:12px}
+  .steps .st::before{counter-increment:s;content:counter(s);position:absolute;left:-13px;top:7px;width:24px;height:24px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);color:var(--accent);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .steps .st b{color:#fff}
+  .branch{display:flex;gap:10px;margin:8px 0}
+  .branch .bx{flex:1;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:12.5px;background:var(--panel)}
+  .branch .bx.yes{border-color:rgba(65,209,143,.35)}
+  .branch .bx.no{border-color:rgba(255,107,107,.3)}
+  .arrow{color:var(--dim);text-align:center;font-size:18px;margin:2px 0}
+  hr.s{border:none;border-top:1px dashed var(--line);margin:18px 0}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:900px){.two-col{grid-template-columns:1fr}}
+  .vs{position:relative}
+  .footer{color:var(--dim);font-size:12px;margin-top:30px}
+  .anchorline{height:4px;width:46px;background:var(--only);border-radius:4px;margin:0 0 18px}
+  ul.clean{margin:8px 0;padding-left:18px}
+  ul.clean li{margin:5px 0;color:#d3dde7}
+  .mini{font-size:12px;color:var(--mut)}
+  .stmap td:first-child{color:var(--mut)}
+  .glow{text-shadow:0 0 18px rgba(160,107,255,.5)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav id="nav">
+  <div class="brand">하이웹넷 <span>전용건</span></div>
+  <div class="sub">온보딩 가이드 / HOSPITAL-162</div>
+  <a href="#s0"><span class="n">0</span>5분 요약</a>
+  <a href="#s1"><span class="n">1</span>하이웹넷이란</a>
+  <a href="#s2"><span class="n">2</span>3개의 집합</a>
+  <a href="#s3"><span class="n">3</span>전용건이란</a>
+  <a href="#s4"><span class="n">4</span>노출 3대 조건</a>
+  <a href="#sB1"><span class="n">5</span>가능 보험사</a>
+  <a href="#s5"><span class="n">6</span>전체 플로우</a>
+  <a href="#sB2"><span class="n">7</span>청구 자동 진행</a>
+  <a href="#s6"><span class="n">8</span>상태값 vs 플래그</a>
+  <a href="#s7"><span class="n">9</span>케이스별 분기</a>
+  <a href="#s8"><span class="n">10</span>환불 2종</a>
+  <a href="#sB3"><span class="n">11</span>예상환급금 공제</a>
+  <a href="#s9"><span class="n">12</span>DB 테이블</a>
+  <a href="#s10"><span class="n">13</span>규모, 기대효과</a>
+  <a href="#sB4"><span class="n">14</span>테스트 방식</a>
+  <a href="#s11"><span class="n">15</span>용어집</a>
+</nav>
+
+<main>
+<!-- 0 -->
+<section id="s0">
+  <h1>하이웹넷 전용건, 5분 요약</h1>
+  <div class="anchorline"></div>
+  <p class="lead">이 문서는 <b>하이웹넷을 전혀 모르는 사람</b>이 읽고, 이번 "대고객 적용 확대(전용건)" 기능의 배경, 노출 조건, 동작 플로우, 예외 케이스까지 이해하는 것을 목표로 함.</p>
+  <p style="margin:8px 0 0"><a href="hiwebnet-wireframe.html" style="display:inline-block;font-size:13px;font-weight:700;color:var(--only);text-decoration:none;border:1px solid rgba(160,107,255,.4);border-radius:8px;padding:7px 13px">→ 화면 변경 와이어프레임(디자인 목업) 보기</a></p>
+
+  <div class="card only" style="border-color:rgba(160,107,255,.35);background:rgba(160,107,255,.06)">
+    <h3 style="margin-top:0;color:#c4a4ff">한 문장 정의</h3>
+    <p style="font-size:15px;margin:0"><b class="glow">전용건</b> = MP가 <b>대리인을 보내 직접 청구(대신청구)는 못 하지만</b>, <b>하이웹넷(전자청구)으로는 청구 가능한</b> 병약국에 대한 고객 신청.</p>
+  </div>
+
+  <p class="lead" style="margin:18px 0 8px">이 네 숫자는 따로가 아니라 <b>하나의 흐름</b> — 병약국(개)을 열면 → 고객(명)이 들어오고 → 청구 성공(명) → 매출(원). 단위가 달라 헷갈리니 순서대로 읽으면 됨.</p>
+  <div class="kpi">
+    <div class="box"><div class="num" style="color:var(--only)">≈1.4만<span style="font-size:14px;color:var(--dim);font-weight:600;margin-left:2px">개</span></div><div class="lbl">새로 열리는 병약국</div><div style="font-size:11px;color:var(--dim);margin-top:6px;line-height:1.45">지금 1만 개 → <b style="color:var(--mut)">2.4만, 노출 2배↑</b></div></div>
+    <div class="box"><div class="num" style="color:var(--accent)">≈3.8만<span style="font-size:14px;color:var(--dim);font-weight:600;margin-left:2px">명</span></div><div class="lbl">새로 신청 가능해진 고객 (2개월)</div><div style="font-size:11px;color:var(--dim);margin-top:6px;line-height:1.45">월 약 1.9만 명, 지금은 '신청불가'였던 사람</div></div>
+    <div class="box"><div class="num" style="color:var(--ok)">≈3.0만<span style="font-size:14px;color:var(--dim);font-weight:600;margin-left:2px">명</span></div><div class="lbl">그중 청구 성공</div><div style="font-size:11px;color:var(--dim);margin-top:6px;line-height:1.45">약 80% (보수 가정, 실측 도달 92%)</div></div>
+    <div class="box"><div class="num" style="color:var(--warn)">≈7.7억<span style="font-size:14px;color:var(--dim);font-weight:600;margin-left:2px">원</span></div><div class="lbl">수수료 매출 (2개월)</div><div style="font-size:11px;color:var(--dim);margin-top:6px;line-height:1.45">월 약 3.8억</div></div>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <b>핵심 3가지만 기억</b><br>
+    ① 고객은 전용건인지 <b>몰라도 됨</b> — 일반 병약국과 똑같이 노출, 실패하면 자동환불이라 손해 없음<br>
+    ② 노출되려면 <b>3개 조건이 동시에(AND) 충족</b> — 스위치 ON × 보험사 하이웹넷 대상 × 병약국 가용<br>
+    ③ 검수 후 하이웹넷 청구 → <b>최대 5회 재시도</b> → 최종 실패 시 <b>18시 자동환불</b>
+  </div>
+</section>
+
+<!-- 1 -->
+<section id="s1">
+  <h2><span class="badge">기초</span> 하이웹넷이란 무엇인가</h2>
+  <p>하이웹넷(Hiwebnet)은 <b>병원, 약국의 의료비를 전산으로 보험사에 청구해주는 외부 시스템</b>. 병원, 약국에 저장된 영수증, 진료 정보를 <b>요양기관기호</b>(병원, 약국 식별번호)로 조회해 보험사에 <b>바로 전자청구</b>함.</p>
+
+  <div class="two-col">
+    <div class="card">
+      <h3 style="margin-top:0">대신청구 (기존 MP 방식)</h3>
+      <p class="mini">대리인이 병원을 직접 방문해 서류를 떼 와서 보험사에 청구. 사람이 움직여야 해서 <b>MP와 협약된, 서비스 가능한 병약국</b>에서만 가능.</p>
+      <span class="pill">사람 기반</span> <span class="pill">medical.isService = true</span>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">하이웹넷 (전자청구)</h3>
+      <p class="mini">병원 방문 없이 전산으로 영수증을 끌어와 청구. <b>요양기관기호만 있으면</b> MP 협약과 무관하게 청구 시도 가능.</p>
+      <span class="pill only">전산 기반</span> <span class="pill only">요양기관기호</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    지금까지 하이웹넷은 <b>대신청구의 "보조 수단"</b>으로만 썼음 — 대신청구 처리 중 하이웹넷이 실패하면 오프라인 발급으로 넘기는 백업. 고객은 하이웹넷의 존재를 전혀 모름.
+  </div>
+</section>
+
+<!-- 2 -->
+<section id="s2">
+  <h2><span class="badge">현황</span> 3개의 집합 — 지금 무엇이 열려 있나</h2>
+  <p>병약국을 두 가지 능력으로 나누면 집합이 생김 : <b>대신청구 가능</b> 집합과 <b>하이웹넷 가능</b> 집합.</p>
+
+  <div class="card" style="text-align:center">
+    <svg viewBox="0 0 560 280" width="100%" style="max-width:560px">
+      <defs>
+        <radialGradient id="gA" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(94,200,216,.35)"/><stop offset="100%" stop-color="rgba(94,200,216,.12)"/></radialGradient>
+        <radialGradient id="gB" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(160,107,255,.35)"/><stop offset="100%" stop-color="rgba(160,107,255,.12)"/></radialGradient>
+      </defs>
+      <circle cx="215" cy="140" r="120" fill="url(#gA)" stroke="var(--accent)" stroke-width="1.5"/>
+      <circle cx="345" cy="140" r="120" fill="url(#gB)" stroke="var(--only)" stroke-width="1.5"/>
+      <text x="130" y="60" fill="var(--accent)" font-size="13" font-weight="700">대신청구 가능</text>
+      <text x="138" y="78" fill="var(--mut)" font-size="11">isService=true</text>
+      <text x="400" y="60" fill="#c4a4ff" font-size="13" font-weight="700" text-anchor="end">하이웹넷 가능</text>
+      <text x="455" y="78" fill="var(--mut)" font-size="11" text-anchor="end">전자청구 가능</text>
+      <!-- left only -->
+      <text x="150" y="145" fill="var(--txt)" font-size="12" text-anchor="middle">대신청구만</text>
+      <text x="150" y="163" fill="var(--dim)" font-size="11" text-anchor="middle">기존 그대로</text>
+      <!-- intersection -->
+      <text x="280" y="135" fill="#fff" font-size="12" text-anchor="middle" font-weight="700">교집합</text>
+      <text x="280" y="152" fill="var(--mut)" font-size="10.5" text-anchor="middle">≈1만 (현재 노출)</text>
+      <!-- right only -->
+      <text x="410" y="138" fill="#fff" font-size="12.5" text-anchor="middle" font-weight="800">전용건</text>
+      <text x="410" y="156" fill="#c4a4ff" font-size="11" text-anchor="middle">≈1.4만 신규</text>
+      <text x="410" y="172" fill="var(--dim)" font-size="10" text-anchor="middle">이번에 오픈</text>
+    </svg>
+  </div>
+
+  <table>
+    <tr><th>영역</th><th>의미</th><th>지금 상태</th></tr>
+    <tr><td>교집합</td><td>대신청구 O + 하이웹넷 O</td><td><span class="pill ok">이미 노출</span> 기존 대신청구 플로우</td></tr>
+    <tr><td>대신청구만</td><td>대신청구 O + 하이웹넷 X</td><td><span class="pill ok">이미 노출</span> 변화 없음</td></tr>
+    <tr><td><b>하이웹넷만 (전용건)</b></td><td>대신청구 X + 하이웹넷 O</td><td><span class="pill bad">신청 불가였음</span> → <b>이번에 오픈</b></td></tr>
+  </table>
+  <p class="small">※ "대신청구 안 되니 신청 자체를 막던" 병약국을, 하이웹넷으로는 청구되니 열어주자는 게 이번 기획의 전부.</p>
+</section>
+
+<!-- 3 -->
+<section id="s3">
+  <h2><span class="badge">개념</span> 전용건이란 — 왜 따로 다루나</h2>
+  <p>전용건은 기존 대신청구 건과 <b>청구 경로가 다르고</b>(대리인 X, 하이웹넷만), <b>실패 시 처리가 다름</b>(대신청구로 못 넘김 → 자동환불). 그래서 시스템이 "이 건은 전용건"이라고 식별할 수 있어야 함.</p>
+
+  <div class="grid g3">
+    <div class="card"><h3 style="margin-top:0">대리인 배당 X</h3><p class="mini">대신청구가 불가하니 대리인을 배정하면 안 됨. 운영 배당 대상에서 제외.</p></div>
+    <div class="card"><h3 style="margin-top:0">하이웹넷만 청구</h3><p class="mini">검수 완료 후 하이웹넷으로만 청구 시도. 실패해도 넘길 오프라인 경로가 없음.</p></div>
+    <div class="card"><h3 style="margin-top:0">실패 = 자동환불</h3><p class="mini">최종 실패 시 서류발급실패 처리 후 결제금 자동환불. 고객 손해 0.</p></div>
+  </div>
+
+  <div class="callout only">
+    <b>고객 경험은 동일</b> — 고객 앱에는 "전용건"이라는 표시가 전혀 없음. 일반 병약국과 똑같이 검색되고, 똑같은 화면을 봄. 내부적으로만 <code>isHiwebnetOnly = true</code>로 구분.
+  </div>
+</section>
+
+<!-- 4 -->
+<section id="s4">
+  <h2><span class="badge">핵심</span> 노출 3대 조건 — 직접 켜보기</h2>
+  <p>전용건 병약국이 고객에게 <b>노출되려면 아래 3가지가 동시에(AND) 충족</b>되어야 함. 하나라도 꺼지면 미노출. 토글을 직접 바꿔보면서 판정 결과를 확인해보세요.</p>
+
+  <div class="sim">
+    <div class="toggles">
+      <div class="tg on" data-k="switch">
+        <div class="tt">① 전체 스위치 ON</div>
+        <div class="td">운영 관리자 전역 토글<br><code>zzalang_config 'hiwebnetOnlyExposure'</code></div>
+        <div class="sw"><span class="dot"></span><span class="s-state"></span></div>
+      </div>
+      <div class="tg on" data-k="ins">
+        <div class="tt">② 보험사 하이웹넷 대상</div>
+        <div class="td">고객이 고른 보험사가 하이웹넷 청구 가능<br><code>insurance_company.hiwebnetUse = true</code></div>
+        <div class="sw"><span class="dot"></span><span class="s-state"></span></div>
+      </div>
+      <div class="tg on" data-k="med">
+        <div class="tt">③ 병약국 하이웹넷 가용</div>
+        <div class="td">해당 병약국이 하이웹넷 마스터에 살아있음<br><span class="mini">(영업상태 정상 + 운영 미차단)</span></div>
+        <div class="sw"><span class="dot"></span><span class="s-state"></span></div>
+      </div>
+    </div>
+    <div class="result show" id="simResult"></div>
+    <div class="note-pre">전제 : 위 ②의 보험사는 <b>"우리 서비스 가능 보험사"</b>가 깔려 있어야 함. 흐름상 보험사 선택이 병약국보다 먼저라, 미서비스 보험사는 애초에 선택 단계에 안 떠서 전용건에 도달조차 못 함. → 실효 보험사 = 서비스 ∩ 하이웹넷 = <b>18개사</b>.</div>
+  </div>
+
+  <h3>각 조건을 왜 보는가</h3>
+  <table>
+    <tr><th>조건</th><th>꺼지면</th><th>이유</th></tr>
+    <tr><td>① 스위치</td><td>전체 전용건 즉시 차단</td><td>시스템 문제 생기면 운영이 바로 끌 수 있는 비상 스위치. <b>끄면 바로 반영(기다림 없음)</b></td></tr>
+    <tr><td>② 보험사</td><td>해당 고객에게 전용건 미노출</td><td>하이웹넷 비대상 보험사면 청구가 <b>100% 확정 실패</b> → 받지 않는 게 맞음 (상반기 기준 비대상 약 17%)</td></tr>
+    <tr><td>③ 병약국</td><td>그 병약국만 미노출</td><td>매일 병약국 목록 조회에서 그 병약국이 빠짐(폐업, 영업종료 등) 또는 운영자 수동 차단 → 비가용. ※ PC 다운, 영수증 조회 실패는 실제 청구 시점의 별개 문제</td></tr>
+  </table>
+</section>
+
+<!-- B1 보험사 -->
+<section id="sB1">
+  <h2><span class="badge">보험사 축</span> 하이웹넷 가능 보험사 — 왜 이 조건이 핵심인가</h2>
+  <p>전용건은 대신청구 경로가 없어 <b>하이웹넷이 유일한 청구 수단</b>. 그래서 고객이 고른 <b>보험사가 하이웹넷 대상이 아니면 청구가 100% 확정 실패</b>함(확률적 실패가 아님). 받아봐야 환불만 나가니, 비대상 보험사 고객에겐 전용건을 아예 안 보여줌.</p>
+
+  <div class="card" style="text-align:center">
+    <svg viewBox="0 0 560 250" width="100%" style="max-width:560px">
+      <defs>
+        <radialGradient id="iA" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(94,200,216,.32)"/><stop offset="100%" stop-color="rgba(94,200,216,.1)"/></radialGradient>
+        <radialGradient id="iB" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(160,107,255,.32)"/><stop offset="100%" stop-color="rgba(160,107,255,.1)"/></radialGradient>
+      </defs>
+      <circle cx="210" cy="125" r="105" fill="url(#iA)" stroke="var(--accent)" stroke-width="1.5"/>
+      <circle cx="350" cy="125" r="105" fill="url(#iB)" stroke="var(--only)" stroke-width="1.5"/>
+      <text x="150" y="48" fill="var(--accent)" font-size="12.5" font-weight="700">우리 서비스 가능</text>
+      <text x="180" y="65" fill="var(--mut)" font-size="11">19개사</text>
+      <text x="420" y="48" fill="#c4a4ff" font-size="12.5" font-weight="700" text-anchor="end">하이웹넷 가능</text>
+      <text x="395" y="65" fill="var(--mut)" font-size="11" text-anchor="end">32개사</text>
+      <text x="148" y="125" fill="#fff" font-size="13" font-weight="800" text-anchor="middle">1</text>
+      <text x="148" y="142" fill="var(--dim)" font-size="9.5" text-anchor="middle">서비스O</text>
+      <text x="148" y="154" fill="var(--dim)" font-size="9.5" text-anchor="middle">하이웹넷X</text>
+      <text x="280" y="120" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">18</text>
+      <text x="280" y="137" fill="var(--mut)" font-size="10" text-anchor="middle">전용건 실효</text>
+      <text x="412" y="125" fill="#fff" font-size="13" font-weight="800" text-anchor="middle">14</text>
+      <text x="412" y="142" fill="var(--dim)" font-size="9.5" text-anchor="middle">하이웹넷만</text>
+      <text x="412" y="154" fill="var(--dim)" font-size="9.5" text-anchor="middle">(생보 위주)</text>
+    </svg>
+    <div class="small">실측 기준(deletedAt 제외), 2026-06</div>
+  </div>
+
+  <table>
+    <tr><th>구분</th><th>개수</th><th>전용건 노출</th><th>설명</th></tr>
+    <tr><td><b>교집합 (서비스 ∩ 하이웹넷)</b></td><td>18</td><td><span class="pill ok">대상</span></td><td>전용건이 실제로 청구 가능한 보험사</td></tr>
+    <tr><td>서비스 O / 하이웹넷 X</td><td>1</td><td><span class="pill bad">미노출</span></td><td>DB손해보험 1개사 — 대신청구는 기존대로 가능, 전용건만 안 보임</td></tr>
+    <tr><td>하이웹넷 O / 서비스 X</td><td>14</td><td><span class="pill">도달 불가</span></td><td>삼성생명 등 생보 위주 — 보험사 선택 단계에 아예 안 떠서 전용건에 도달 못 함</td></tr>
+  </table>
+
+  <h3>보험사 전체 명단 (실측)</h3>
+  <div class="card">
+    <div style="margin-bottom:14px">
+      <div style="font-size:13px;font-weight:700;color:var(--ok);margin-bottom:7px">① 전용건 대상 — 서비스 ∩ 하이웹넷 (18개사)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <span class="pill ok">삼성화재</span><span class="pill ok">현대해상</span><span class="pill ok">KB손해</span><span class="pill ok">메리츠화재</span><span class="pill ok">한화손해</span><span class="pill ok">롯데손해</span><span class="pill ok">흥국화재</span><span class="pill ok">하나손해</span><span class="pill ok">NH농협손해</span><span class="pill ok">라이나손해(에이스)</span><span class="pill ok">한화생명</span><span class="pill ok">흥국생명</span><span class="pill ok">라이나생명</span><span class="pill ok">미래에셋생명</span><span class="pill ok">푸본현대생명</span><span class="pill ok">IM라이프(DGB)</span><span class="pill ok">KDB생명</span><span class="pill ok">NH농협생명</span>
+      </div>
+    </div>
+    <div style="margin-bottom:14px">
+      <div style="font-size:13px;font-weight:700;color:var(--bad);margin-bottom:7px">② 서비스 O / 하이웹넷 X — 전용건 미노출 (1개사)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <span class="pill bad">DB손해</span>
+        <span class="small" style="align-self:center">대신청구는 기존대로 가능, 전용건만 안 보임</span>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:var(--mut);margin-bottom:7px">③ 하이웹넷 O / 서비스 X — 지금은 못 엶 (14개사)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <span class="pill">삼성생명</span><span class="pill">교보생명</span><span class="pill">신한라이프</span><span class="pill">동양생명</span><span class="pill">하나생명</span><span class="pill">ABL생명</span><span class="pill">AIA생명</span><span class="pill">처브라이프</span><span class="pill">우정사업본부</span><span class="pill">새마을금고</span><span class="pill">한국교직원공제회</span><span class="pill">AIG손해</span><span class="pill">AXA손해</span><span class="pill">MG손해</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <b>한 곳이 비대상의 거의 전부</b> — 서비스되지만 하이웹넷 안 되는 <b>DB손해 1개사</b>가 4-5월 전용건 비대상 신청의 약 <b>17%</b>를 차지. 이 보험사가 하이웹넷을 지원하기 시작하면 전용건 대상이 그만큼 자동 확대됨 → 향후 푸시 포인트.
+  </div>
+  <p class="small">보험사 하이웹넷 대상 목록(<code>insurance_company.hiwebnetUse</code>)은 <b>매일 02시 하이웹넷에서 받아 갱신</b>됨. 즉 보험사 대상 여부도 고정이 아니라 매일 바뀔 수 있음.</p>
+</section>
+
+<!-- 5 -->
+<section id="s5">
+  <h2><span class="badge">플로우</span> 신청부터 환불까지 상세 워크플로우</h2>
+  <p>보험사 선택부터 환불, 재신청까지 한눈에. <b>초록 세로줄이 정상 흐름</b>, 오른쪽 <b>빨강/주황 가지</b>가 그 단계에서 빠지는 예외. 회색 칩은 <span class="wfc cust">고객 화면</span>, 보라 칩은 <span class="wfc int">내부 상태</span>.</p>
+  <div class="wf-legend">
+    <span><i style="background:var(--ok)"></i>정상 진행</span>
+    <span><i style="background:var(--bad)"></i>중단, 환불</span>
+    <span><i style="background:var(--warn)"></i>재시도</span>
+    <span><i style="background:var(--only)"></i>전용건 구간</span>
+  </div>
+
+  <style>
+    .wf-legend{display:flex;gap:15px;flex-wrap:wrap;font-size:11.5px;color:var(--mut);margin:2px 0 16px 2px}
+    .wf-legend i{display:inline-block;width:20px;height:3px;border-radius:2px;vertical-align:3px;margin-right:5px}
+    .wf .lane{display:flex;align-items:stretch}
+    .wf .spine{flex:0 0 252px;position:relative}
+    .wf .node{display:flex;gap:11px;align-items:flex-start}
+    .wf .num{flex:0 0 30px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;background:var(--panel);border:2px solid var(--ok);color:var(--ok);z-index:2}
+    .wf .lane.pp .num{border-color:var(--only);color:#c4a4ff}
+    .wf .lane.end .num{background:var(--ok);border-color:var(--ok);color:#08130d}
+    .wf .box{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-bottom:14px}
+    .wf .lane.pp .box{border-color:rgba(160,107,255,.5)}
+    .wf .lane.end .box{border-color:rgba(65,209,143,.5)}
+    .wf .tt{font-weight:750;font-size:13.5px;line-height:1.35}
+    .wf .nt{font-size:11.5px;color:var(--mut);margin-top:2px}
+    .wf .chip{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;vertical-align:1px}
+    .wf .chip.c{background:rgba(94,200,216,.16);color:var(--accent)}
+    .wf .chip.i{background:rgba(160,107,255,.18);color:#c4a4ff}
+    .wf .spine::before{content:"";position:absolute;left:14px;top:26px;bottom:-2px;width:2px;background:var(--ok);opacity:.35;z-index:1}
+    .wf .lane.last .spine::before{display:none}
+    .wf .exc{flex:1;display:flex;align-items:flex-start;padding-top:4px}
+    .wf .exc .arm{flex:0 0 24px;height:2px;background:var(--bad);opacity:.5;margin-top:13px}
+    .wf .exc.am .arm{background:var(--warn)}
+    .wf .exccol{flex:1;display:flex;flex-direction:column;gap:8px}
+    .wf .ebox{border:1px solid;border-radius:9px;padding:7px 11px;font-size:11.5px;background:var(--panel)}
+    .wf .ebox.r{border-color:rgba(255,107,107,.5)}
+    .wf .ebox.a{border-color:rgba(255,180,84,.55)}
+    .wf .ehd{font-weight:800;font-size:11px;margin-bottom:1px}
+    .wf .ebox.r .ehd{color:var(--bad)}
+    .wf .ebox.a .ehd{color:var(--warn)}
+    .wf .fork{display:flex;gap:9px;margin:-4px 0 14px 41px;flex-wrap:wrap}
+    .wf .fk{flex:1;min-width:210px;border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-size:11.5px;background:var(--panel)}
+    .wf .fk b{display:block;font-size:11px;margin-bottom:2px}
+    .wf .fk.on{border-color:rgba(160,107,255,.5)} .wf .fk.on b{color:#c4a4ff}
+    .wf .fk.gen b{color:var(--dim)}
+    .wf .steplabel{font-size:10.5px;color:var(--ok);font-weight:700;margin:-8px 0 4px 41px}
+    .wfc{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+    .wfc.cust{background:rgba(94,200,216,.15);color:var(--accent)}
+    .wfc.int{background:rgba(160,107,255,.15);color:#c4a4ff}
+    .wf-band{margin-top:8px;border:1px dashed rgba(160,107,255,.5);border-radius:11px;padding:11px 14px;background:rgba(160,107,255,.06)}
+    .wf-band .bt{font-weight:800;font-size:12.5px;color:#c4a4ff;margin-bottom:8px}
+    .wf-band .opts{display:flex;gap:8px;flex-wrap:wrap}
+    .wf-band .opt{flex:1;min-width:170px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:11.5px;background:var(--panel)}
+    .wf-band .opt b{display:block;font-size:11px;margin-bottom:2px}
+    @media(max-width:700px){.wf .spine{flex-basis:210px}}
+  </style>
+
+  <div class="wf">
+
+    <div class="lane">
+      <div class="spine"><div class="node"><div class="num">1</div><div class="box"><div class="tt">보험사 선택</div><div class="nt">서비스 가능 보험사만 노출</div></div></div></div>
+      <div class="exc"><div class="arm"></div><div class="exccol"><div class="ebox r"><div class="ehd">미서비스 보험사</div>선택지에 안 뜸 → 전용건 도달 불가</div></div></div>
+    </div>
+
+    <div class="lane">
+      <div class="spine"><div class="node"><div class="num">2</div><div class="box"><div class="tt">병약국 검색</div><div class="nt">전용, 일반 구분 없이 노출</div></div></div></div>
+      <div class="exc"><div class="arm"></div><div class="exccol"><div class="ebox r"><div class="ehd">노출 3조건 미충족</div>스위치 / 보험사 / 병약국 중 하나라도 X → 신청불가</div></div></div>
+    </div>
+
+    <div class="lane">
+      <div class="spine"><div class="node"><div class="num">3</div><div class="box"><div class="tt">신청, 결제</div><div class="nt">재진입 / 결제 직전 조건 재확인</div></div></div></div>
+      <div class="exc"><div class="arm"></div><div class="exccol"><div class="ebox r"><div class="ehd">임시저장 사이 조건 바뀜</div>재진입 때 걸리면 통삭제(처음부터) / 결제 직전이면 차단(출금 전)</div></div></div>
+    </div>
+
+    <div class="lane">
+      <div class="spine"><div class="node"><div class="num">4</div><div class="box"><div class="tt">검수</div><div class="nt">신분증, 전자서명 확인</div></div></div></div>
+      <div class="exc"><div class="arm"></div><div class="exccol"><div class="ebox r"><div class="ehd">보완요청 후 기한 내 미보완</div>보완 기한 경과 → 자동취소, 환불</div></div></div>
+    </div>
+
+    <div class="fork">
+      <div class="fk on"><b>전용건 → 아래 계속</b>하이웹넷 청구로 진행</div>
+      <div class="fk gen"><b>일반건 → 대리인미지정</b>배당, 기존 대신청구 (이 흐름 밖)</div>
+    </div>
+
+    <div class="lane pp">
+      <div class="spine"><div class="node"><div class="num">5</div><div class="box"><div class="tt">하이웹넷 청구 진행<span class="chip i">하이웹넷전용청구중</span><span class="chip c">고객 검토</span></div><div class="nt">검수 완료 시 자동 청구, 재시도 포함, 대리인 배당 X</div></div></div></div>
+      <div class="exc am"><div class="arm"></div><div class="exccol">
+        <div class="ebox r"><div class="ehd">고객이 직접 취소</div>즉시 환불</div>
+        <div class="ebox a"><div class="ehd">서비스 일시불가(900) → 재시도 (최대 5회)</div>요양기관 조회가 900(일시불가)일 때 회복 대기, 영업일 10/12/14/16시 재시도. 회복하면 성공 / 5회 소진하면 <b style="color:var(--bad)">최종실패 → 저녁 6시 환불 → 익일 재신청 (전용건만)</b></div>
+      </div></div>
+    </div>
+
+    <div class="steplabel">↓ 청구 성공</div>
+
+    <div class="lane end last">
+      <div class="spine"><div class="node"><div class="num">✓</div><div class="box"><div class="tt">청구 완료</div><div class="nt">고객: 서류발급중 → 청구서작성중 → 청구완료</div></div></div></div>
+      <div class="exc"><div class="arm" style="background:transparent"></div><div class="exccol"><div class="ebox" style="border-color:var(--line);color:var(--mut)"><div class="ehd" style="color:var(--ok)">완료</div>알림톡 발송, 신청 종료</div></div></div>
+    </div>
+
+  </div>
+
+  <div class="wf-band">
+    <div class="bt">＋ 보험사 변경 (진행 중 어느 단계에서든 끼어들 수 있음)</div>
+    <div class="opts">
+      <div class="opt" style="border-color:rgba(65,209,143,.4)"><b style="color:var(--ok)">하이웹넷 지원사로</b>재시도 리셋 후 청구 계속</div>
+      <div class="opt" style="border-color:rgba(255,180,84,.4)"><b style="color:var(--warn)">미지원사 + 동의</b>전용건만 취소(저녁 6시 환불), 일반건은 변경</div>
+      <div class="opt"><b style="color:var(--mut)">미지원사 + 거절</b>변경 안 함, 그대로 유지</div>
+    </div>
+  </div>
+  <p class="small">고객 화면에는 "하이웹넷"이라는 단어가 한 번도 안 나옴. 재시도 도는 동안은 "검토", 실패하면 기존 서류발급실패 환불 안내와 동일.</p>
+</section>
+
+<!-- B2 자동청구 -->
+<section id="sB2">
+  <h2><span class="badge">동작</span> 청구는 어떻게 자동으로 진행되나</h2>
+  <p>전용건 청구는 <b>사람이 버튼을 누르지 않음</b>. 검수만 끝나면 시스템이 알아서 하이웹넷에 청구하고, 안 되면 정해진 시간마다 다시 시도함. 흐름만 알면 됨.</p>
+
+  <h3>1. 청구는 자동으로 시작</h3>
+  <ul class="clean">
+    <li>신분증, 전자서명 <b>검수가 끝나는 순간</b> 시스템이 자동으로 하이웹넷에 청구를 보냄 (상담원이 따로 누를 필요 없음)</li>
+    <li>병원이든 약국이든 똑같이 자동 청구됨</li>
+  </ul>
+
+  <h3>2. 하루에 정해진 시간마다 다시 시도 (최대 5번)</h3>
+  <div class="card">
+    <div class="legend" style="margin-top:0"><span><i style="background:var(--warn)"></i>청구 다시 시도</span><span><i style="background:var(--accent)"></i>매일 새벽 목록 갱신</span><span><i style="background:var(--bad)"></i>환불</span></div>
+    <svg viewBox="0 0 760 96" width="100%" style="max-width:760px">
+      <line x1="30" y1="60" x2="740" y2="60" stroke="var(--line)" stroke-width="2"/>
+      <g font-size="11" fill="var(--mut)" text-anchor="middle">
+        <g><circle cx="90" cy="60" r="6" fill="var(--accent)"/><text x="90" y="40">새벽 2시</text><text x="90" y="84" font-size="9.5">보험사 목록</text></g>
+        <g><circle cx="180" cy="60" r="6" fill="var(--accent)"/><text x="180" y="40">새벽 3시</text><text x="180" y="84" font-size="9.5">병약국 목록</text></g>
+        <g><circle cx="310" cy="60" r="7" fill="var(--warn)"/><text x="310" y="40">10시</text></g>
+        <g><circle cx="410" cy="60" r="7" fill="var(--warn)"/><text x="410" y="40">12시</text></g>
+        <g><circle cx="510" cy="60" r="7" fill="var(--warn)"/><text x="510" y="40">14시</text></g>
+        <g><circle cx="610" cy="60" r="7" fill="var(--warn)"/><text x="610" y="40">16시</text></g>
+        <g><circle cx="710" cy="60" r="6" fill="var(--bad)"/><text x="710" y="40">18시</text><text x="710" y="84" font-size="9.5" fill="var(--bad)">자동환불</text></g>
+      </g>
+    </svg>
+    <p class="small" style="margin-bottom:0">청구가 한 번에 안 되면 <b>영업일 10시, 12시, 14시, 16시</b>에 다시 시도. <b>최대 5번</b> 해보고 그래도 안 되면 최종 실패. 주말, 공휴일은 건너뛰고 다음 영업일에 이어서 함. 최종 실패한 건은 <b>그날 저녁 6시(18시)에 자동환불</b>.</p>
+  </div>
+  <div class="callout warn"><b>재시도 조건은 "요양기관정보 조회에서 서비스 일시불가(SVC_ST=900)"일 때</b> — 모든 하이웹넷 실패에 재시도가 도는 게 아님. 병약국 조회에서 그 병원 시스템이 <b>일시 불가(900)</b>로 나오면, 잠시 후 정상(000)으로 회복되길 기다려 위 시간마다 다시 시도하는 것. 이 조건이 아닌 실패의 처리(즉시 실패 등)는 BE 확인.</div>
+
+  <div class="callout">매일 새벽에 하이웹넷에서 <b>보험사 목록(2시)과 병약국 목록(3시)을 새로 받아 갱신</b>함. 그래서 어제는 되던 병약국, 보험사가 오늘은 빠질 수도 있음. 이 갱신은 전체 스위치가 꺼져 있어도 계속 돎(목록만 받아둠).</div>
+
+  <h3>3. 일반 하이웹넷 건과 섞이지 않게</h3>
+  <p>기존에도 하이웹넷으로 청구하는 일반 건들이 있음. 전용건이 그 처리 흐름에 섞이면 일반 건에 영향을 줄 수 있어, 전용건은 <b><code>하이웹넷전용청구중</code>이라는 별도 상태로 따로 표시</b>해서 관리함. 덕분에 일반 하이웹넷 처리와 절대 안 섞임.</p>
+  <p class="small">※ 위 시간표, 처리 방식은 현재 시스템이 그렇게 돌고 있다는 설명(이해용). 실제 구현, 시간 변경은 개발(BE) 영역.</p>
+</section>
+
+<!-- 6 -->
+<section id="s6">
+  <h2><span class="badge">자주 헷갈림</span> 상태값 vs 플래그 — 둘 다 있는 이유</h2>
+  <p>전용건엔 새로 생긴 게 <b>두 개</b>인데 역할이 완전히 다름. 겹치는 게 아님.</p>
+  <div class="two-col">
+    <div class="card" style="border-color:var(--only)">
+      <span class="pill only">① 상태값 (신설)</span>
+      <h3 style="margin-top:10px">하이웹넷전용청구중</h3>
+      <p class="mini"><b>역할 : 진행 단계 표현.</b> "지금 청구, 재시도 중"이라는 현재 위치를 나타냄.</p>
+      <ul class="clean mini">
+        <li>검수 완료 직후 진입</li>
+        <li>성공하면 → 청구서발송으로 바뀜</li>
+        <li>최종 실패하면 → 서류발급실패로 바뀜</li>
+        <li>즉 <b>잠깐 머무는 진행 상태</b> (끝나면 사라짐)</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:var(--accent)">
+      <span class="pill" style="background:rgba(94,200,216,.14);color:var(--accent);border-color:rgba(94,200,216,.35)">② 플래그 (신설)</span>
+      <h3 style="margin-top:10px">isHiwebnetOnly = true</h3>
+      <p class="mini"><b>역할 : 종류 식별.</b> "이 건은 전용건"이라는 꼬리표. 전 구간 안 변함.</p>
+      <ul class="clean mini">
+        <li>대리인 배당 제외 (이 플래그로 막음)</li>
+        <li>최종 실패 시 사유 "하이웹넷청구불가" 부여</li>
+        <li>리포팅, 필터링</li>
+        <li>즉 <b>영구 속성</b> (신청부터 끝까지 유지)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout">
+    <b>왜 둘 다 필요?</b> 상태가 "서류발급실패"로 바뀌고 나면 <b>상태값만으로는 전용건인지 구분 불가</b>. 그래서 종류를 식별하는 플래그가 따로 있어야 함. 배당 제외도 <b>플래그 하나로만</b> 처리(상태로 중복해서 막지 않음).
+  </div>
+
+  <h3>고객 화면 ↔ 내부 상태 매핑</h3>
+  <table class="stmap">
+    <tr><th>단계</th><th>고객 화면</th><th>내부 상태</th></tr>
+    <tr><td>검수~재시도 중</td><td>검토</td><td><span class="pill only">하이웹넷전용청구중</span> + 플래그 true</td></tr>
+    <tr><td>하이웹넷 성공 후</td><td>서류발급중 → 청구서작성중 → 청구완료</td><td>청구서발송</td></tr>
+    <tr><td>최종 실패</td><td>환불 (서류발급실패 안내)</td><td>서류발급실패 + 사유 하이웹넷청구불가</td></tr>
+    <tr><td>외부(자비스 v3 등)로 내보내는 값</td><td>—</td><td>상태값 <code>HIWEBNET_ONLY_CLAIMING</code>(영문), 진행단계는 '검토(REVIEW)'로 전달</td></tr>
+  </table>
+</section>
+
+<!-- 7 -->
+<section id="s7">
+  <h2><span class="badge">예외</span> 케이스별 분기 — 탭으로 보기</h2>
+  <p>해피 케이스 외에 알아둬야 할 분기들. 탭을 눌러 확인.</p>
+  <div class="tabs" id="caseTabs">
+    <div class="tab active" data-c="c1">보험사 변경</div>
+    <div class="tab" data-c="c2">임시저장 삭제</div>
+    <div class="tab" data-c="c3">결제 직전 차단</div>
+    <div class="tab" data-c="c4">재신청</div>
+    <div class="tab" data-c="c5">혼합 신청</div>
+    <div class="tab" data-c="c6">차단 케이스</div>
+  </div>
+
+  <div class="case active" id="c1">
+    <div class="card">
+      <h3 style="margin-top:0">미지원 보험사로 변경하면 — 동의 방식</h3>
+      <p class="mini">고객, 폴리스 모두 동일. 미지원 보험사도 선택은 가능하되, <b>변경 전 안내 후 동의해야 진행</b>.</p>
+      <div class="steps">
+        <div class="st">고객/상담원이 <b>하이웹넷 미지원</b> 보험사로 변경 시도</div>
+        <div class="st">변경 전 <b>취소될 전용 병약국 목록</b>을 미리 보여줌 : "이 보험사로 바꾸면 ○○은 청구가 안 돼 취소, 환불돼요"</div>
+      </div>
+      <div class="branch">
+        <div class="bx yes"><b>동의</b><br>전용건 → 취소 → <b>저녁 6시 자동환불</b><br>일반건 → 새 보험사로 변경 진행<br><span class="mini">전용건만 있으면 전부 취소(신청 빔)</span></div>
+        <div class="bx no"><b>거절</b><br>변경 요청 안 보냄 → 아무 일 없음</div>
+      </div>
+      <p class="small">'가능 보험사만 노출'(단순 필터)은 폐기됨 — 섞인 신청에서 일반건 변경까지 막혀서. 청구서발송된 전용건도 미지원사 변경 시 취소, 환불 대상.</p>
+    </div>
+  </div>
+
+  <div class="case" id="c2">
+    <div class="card">
+      <h3 style="margin-top:0">임시저장 후 조건이 바뀌면 — 통삭제</h3>
+      <p class="mini">신청 중 멈추면 고른 병약국, 보험사가 임시저장됨. 노출 조건은 매일 갱신되니, 다시 들어왔을 때 그새 조건이 깨졌을 수 있음.</p>
+      <p class="mini" style="margin-top:8px"><b>체크 시점</b> : 홈 화면 진입 시 기존 신청내역 조회 API에서 임시저장 존재 여부 확인 (+ 결제 직전에 한 번 더).</p>
+      <div class="card" style="padding:14px 12px;overflow-x:auto">
+        <svg viewBox="0 0 700 372" width="100%" style="min-width:640px">
+          <defs>
+            <marker id="tmpArr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 Z" fill="var(--dim)"/></marker>
+            <marker id="tmpOk" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 Z" fill="var(--ok)"/></marker>
+            <marker id="tmpBad" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 Z" fill="var(--bad)"/></marker>
+          </defs>
+          <g font-family="inherit">
+            <!-- A 홈 진입 -->
+            <rect x="255" y="10" width="190" height="38" rx="9" fill="var(--panel2)" stroke="var(--line)"/>
+            <text x="350" y="34" text-anchor="middle" fill="var(--txt)" font-size="12.5" font-weight="700">홈 화면 진입</text>
+            <path d="M350,48 L350,66" stroke="var(--line)" stroke-width="1.6" fill="none" marker-end="url(#tmpArr)"/>
+            <!-- B API -->
+            <rect x="215" y="68" width="270" height="46" rx="9" fill="var(--panel2)" stroke="var(--line)"/>
+            <text x="350" y="88" text-anchor="middle" fill="var(--txt)" font-size="12" font-weight="700">기존 신청내역 조회 API</text>
+            <text x="350" y="104" text-anchor="middle" fill="var(--mut)" font-size="10.5">임시저장 존재 여부 확인</text>
+            <path d="M350,114 L350,132" stroke="var(--line)" stroke-width="1.6" fill="none" marker-end="url(#tmpArr)"/>
+            <!-- D1 임시저장 있나 -->
+            <polygon points="350,134 434,172 350,210 266,172" fill="rgba(94,200,216,.1)" stroke="var(--accent)"/>
+            <text x="350" y="176" text-anchor="middle" fill="var(--txt)" font-size="11.5" font-weight="700">임시저장 있나?</text>
+            <!-- N 왼쪽 -->
+            <path d="M266,172 L150,172" stroke="var(--dim)" stroke-width="1.6" fill="none" marker-end="url(#tmpArr)"/>
+            <text x="215" y="164" text-anchor="middle" fill="var(--dim)" font-size="10.5" font-weight="700">N</text>
+            <rect x="20" y="150" width="128" height="46" rx="9" fill="var(--panel)" stroke="var(--line)"/>
+            <text x="84" y="170" text-anchor="middle" fill="var(--txt)" font-size="11" font-weight="700">신규 신청</text>
+            <text x="84" y="185" text-anchor="middle" fill="var(--dim)" font-size="9.5">미대상자 등, 임시저장 없음</text>
+            <!-- Y 아래 -->
+            <path d="M350,210 L350,228" stroke="var(--accent)" stroke-width="1.6" fill="none" marker-end="url(#tmpArr)"/>
+            <text x="362" y="224" fill="var(--accent)" font-size="10.5" font-weight="700">Y</text>
+            <!-- D2 조건 유지 -->
+            <polygon points="350,230 452,270 350,310 248,270" fill="rgba(160,107,255,.1)" stroke="var(--only)"/>
+            <text x="350" y="268" text-anchor="middle" fill="var(--txt)" font-size="11.5" font-weight="700">조건 유지?</text>
+            <text x="350" y="283" text-anchor="middle" fill="var(--mut)" font-size="9.5">병약국 / 보험사 / 스위치</text>
+            <!-- 유지 아래 -->
+            <path d="M350,310 L350,326" stroke="var(--ok)" stroke-width="1.8" fill="none" marker-end="url(#tmpOk)"/>
+            <text x="362" y="323" fill="var(--ok)" font-size="10.5" font-weight="700">유지</text>
+            <rect x="200" y="328" width="300" height="40" rx="9" fill="rgba(65,209,143,.1)" stroke="var(--ok)"/>
+            <text x="350" y="345" text-anchor="middle" fill="var(--txt)" font-size="11.5" font-weight="700">'이어서 진행할까요?' 모달</text>
+            <text x="350" y="360" text-anchor="middle" fill="var(--mut)" font-size="10">이어서 진행하기 / 새로 신청하기</text>
+            <!-- 깨짐 오른쪽 -->
+            <path d="M452,270 L560,270" stroke="var(--bad)" stroke-width="1.8" fill="none" marker-end="url(#tmpBad)"/>
+            <text x="505" y="262" text-anchor="middle" fill="var(--bad)" font-size="10.5" font-weight="700">깨짐</text>
+            <rect x="562" y="248" width="130" height="46" rx="9" fill="rgba(255,107,107,.09)" stroke="var(--bad)"/>
+            <text x="627" y="268" text-anchor="middle" fill="var(--txt)" font-size="11" font-weight="700">통삭제 → 처음부터</text>
+            <text x="627" y="283" text-anchor="middle" fill="var(--dim)" font-size="9.5">모달 없음</text>
+          </g>
+        </svg>
+      </div>
+      <div class="branch">
+        <div class="bx yes"><b>임시저장 있고 조건 유지</b><br>기존 '이어서 진행할까요?' 모달 → 이어서 결제 진행</div>
+        <div class="bx no"><b>조건 하나라도 깨짐</b><br>모달 없이 임시저장 <b>통째 삭제</b> → 처음부터<br><span class="mini">(부분 정리 X)</span></div>
+      </div>
+      <div class="callout warn" style="margin-top:12px"><b>왜 통삭제?</b> 일부만 빼면 고객이 <b>예상 환급금이 달라진 걸 모르고 결제</b>할 수 있음. 데이터 무결성 위해 통삭제.<br><b>별도 안내 문구는 없음</b> — 재진입 시 임시저장이 비어 있고 처음부터 진행.</div>
+      <p class="small">트리거 : 보험사 비대상 변경 / 병약국 리스트 이탈 / 스위치 OFF.</p>
+    </div>
+  </div>
+
+  <div class="case" id="c3">
+    <div class="card">
+      <h3 style="margin-top:0">결제 직전에 조건이 깨지면</h3>
+      <div class="callout" style="margin-top:0"><b>결제 직전 재확인은 3조건 전부를 다시 봄</b> — 스위치 ON / 보험사 하이웹넷 대상 / 병약국 가용. 아래는 스위치 OFF 예시지만, 병약국이 빠지거나 보험사가 미지원으로 바뀌어도 똑같이 막힘.</div>
+      <div class="steps">
+        <div class="st">병약국 선택 화면 진입 (가능 상태로 들어왔으니 화면은 유지)</div>
+        <div class="st">결제 직전 3조건 중 하나라도 깨짐 (예 : 스위치 OFF)</div>
+        <div class="st">결제 직전 재확인 단계에서 <b>막힘</b> — 확인이 먼저, 토스 승인이 나중이라 <b>승인 전에 막혀 출금 자체가 없음</b> (환불할 것도 없음)</div>
+        <div class="st">모달 : "선택하신 일부 의료기관은 지금 신청이 어려워요. 잠시 후 다시 시도하시거나 다른 병원을 선택해 주세요"</div>
+      </div>
+      <div class="branch">
+        <div class="bx yes"><b>다시 ON 켜짐</b><br><b>즉시 결제 가능</b> (실시간이라 바로 반영, 기다릴 필요 없음)</div>
+        <div class="bx no"><b>화면 나갔다 재진입</b><br>임시저장 통삭제 → 처음부터</div>
+      </div>
+      <p class="small">재시도 도는 진행 중 건은 스위치 OFF여도 <b>멈추지 않고</b> 성공/환불로 종결. OFF는 신규 노출, 신청만 차단.</p>
+    </div>
+  </div>
+
+  <div class="case" id="c4">
+    <div class="card">
+      <h3 style="margin-top:0">최종 실패 후 재신청</h3>
+      <p class="mini">전용건은 하이웹넷, 병원 PC 일시 장애로도 실패할 수 있어 <b>영구 차단은 과함</b>.</p>
+      <div class="steps">
+        <div class="st">전용건 최종 실패 → 환불 완료</div>
+        <div class="st"><b>당일</b> : 재신청 불가 (1일 제한)</div>
+        <div class="st"><b>익일~</b> : 재신청 허용 (횟수 무제한)</div>
+      </div>
+      <div class="callout"><span class="pill bad">일반건</span> 서류발급실패는 기존대로 <b>영구 재신청 불가</b>. 전용건만 익일 허용. 계속 실패하는 병약국은 운영이 실패 원인 보고 그 병약국을 목록에서 막음.</div>
+    </div>
+  </div>
+
+  <div class="case" id="c5">
+    <div class="card">
+      <h3 style="margin-top:0">전용 + 일반 섞여서 신청한 경우</h3>
+      <p class="mini">한 신청에 전용건과 일반건이 같이 있을 수 있음. 검수 완료 후 <b>건별로 갈라짐</b>.</p>
+      <div class="branch">
+        <div class="bx"><b>일반건</b><br>대리인미지정 (배당) → 기존 대리인 청구 플로우</div>
+        <div class="bx" style="border-color:var(--only)"><b>전용건</b><br>하이웹넷전용청구중 (배당 X) → 하이웹넷 청구 → 성공/최종실패</div>
+      </div>
+      <p class="small">배당은 일반건만. 전용건은 일반 하이웹넷 처리와 따로 관리돼서 안 섞임.</p>
+    </div>
+  </div>
+
+  <div class="case" id="c6">
+    <div class="card">
+      <h3 style="margin-top:0">아예 노출, 신청이 안 되는 케이스</h3>
+      <table>
+        <tr><th>상황</th><th>결과</th></tr>
+        <tr><td>미서비스 병원 + 스위치 OFF</td><td>신청불가 (기존과 동일)</td></tr>
+        <tr><td>미서비스 병원 + 보험사 하이웹넷 미지원</td><td>신청불가 (보험사 축)</td></tr>
+        <tr><td>치과, 한의원, 성형외과 등 미서비스 타입</td><td>신청불가 (실비 청구 거의 없어 제외)</td></tr>
+        <tr><td>미서비스 보험사</td><td>보험사 선택 단계에 미노출 → 전용건 도달 불가</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section id="s8">
+  <h2><span class="badge">중요</span> 환불 2종 — 즉시 vs 저녁 6시 일괄</h2>
+  <p>환불 시점이 경로에 따라 다름. 헷갈리기 쉬운 부분.</p>
+  <div class="two-col">
+    <div class="card" style="border-color:rgba(65,209,143,.4)">
+      <span class="pill ok">즉시 환불</span>
+      <h3 style="margin-top:10px">고객이 직접 취소</h3>
+      <p class="mini">재시도 중('검토' 상태) 고객이 직접 취소 버튼을 누르는 경우. 취소하면 <b>토스 결제취소가 바로 호출</b>돼 그 자리에서 환불.</p>
+    </div>
+    <div class="card" style="border-color:rgba(255,180,84,.4)">
+      <span class="pill warn">영업일 저녁 6시 일괄</span>
+      <h3 style="margin-top:10px">최종 실패 + 보험사 바꾸며 같이 취소</h3>
+      <p class="mini">① 재시도 5번 다 해도 <b>최종 실패</b>한 건<br>② 하이웹넷 안 되는 보험사로 <b>바꾸면서 같이 취소</b>되는 전용건<br>→ 저녁 6시에 모아서 환불.</p>
+    </div>
+  </div>
+  <div class="callout">즉시 환불 건도 저녁 6시 일괄 처리가 한 번 더 확인해주는 안전망 역할. 즉시 환불이 어쩌다 실패해도 저녁에 다시 잡아줌.</div>
+</section>
+
+<!-- B3 종별 공제 -->
+<section id="sB3">
+  <h2><span class="badge">예상환급금</span> 종별 공제 보정</h2>
+  <p>실손 공제액은 의료기관 종별에 따라 다름(의원 1만 / 병원 1.5만 / 상급종합 2만). <b>하이웹넷 데이터에는 종별코드(<code>hiwebnetType</code> 01~12)가 들어있어서</b>, 이걸 우리 종별로 매핑해 <b>각 종별에 맞는 공제를 적용</b>함. 즉 전부 병원으로 뭉뚱그리는 게 아니라 의원은 1만, 상급종합은 2만으로 각각 맞게 계산됨.</p>
+  <div class="grid g3">
+    <div class="card"><h3 style="margin-top:0">의원</h3><div class="kpi"><div class="num" style="font-size:22px">1만 원</div></div><p class="mini" style="margin:6px 0 0">1만으로 별도 보정</p></div>
+    <div class="card"><h3 style="margin-top:0">병원</h3><div class="kpi"><div class="num" style="font-size:22px">1.5만 원</div></div><p class="mini" style="margin:6px 0 0">기본</p></div>
+    <div class="card" style="border-color:var(--warn)"><h3 style="margin-top:0">상급종합</h3><div class="kpi"><div class="num" style="font-size:22px;color:var(--warn)">2만 원</div></div><p class="mini" style="margin:6px 0 0">2만으로 보정</p></div>
+  </div>
+  <div class="callout">
+    <b>보정 (BE 확정, 범석님 2026-07)</b> — 하이웹넷 종별코드(<code>hiwebnetType</code> 01~12)를 우리 종별로 매핑해 <b>의원(1만), 상급종합(2만)까지 전 종별 각각 보정</b>. 전용건 계산 시점에만 적용(기존 건 영향 없음). 종별코드 매핑을 안 하면 병원 1.5만으로 뭉뚱그려져 상급종합 과대표시 리스크가 있었으나, 종별 매핑으로 해소.
+  </div>
+  <p class="small">2,3세대 실손 + 소액 통원에서 ±5천 수준 차이. 4-5월 2,3세대 신청 비중 약 35%로 무시 어려워 종별 보정 적용.</p>
+</section>
+
+<!-- 9 -->
+<section id="s9">
+  <h2><span class="badge">개발 컨텍스트</span> 관련 DB 테이블, 컬럼</h2>
+  <p class="small">PM이 개발팀에 컨텍스트 주는 용도. 실제 스키마 설계는 BE 자율.</p>
+  <table>
+    <tr><th>테이블.컬럼</th><th>설명</th></tr>
+    <tr><td><code>medical.isService</code></td><td>MP 대신청구 가능 여부. true 27,856 / false 135,713</td></tr>
+    <tr><td><code>medical.code</code></td><td>병원 유형 16종 + PHARMACY. 병원/약국 분기 기준</td></tr>
+    <tr><td><code>medical.businessNumber</code></td><td>하이웹넷 병약국 매핑 키 (사업자번호, 의료기관 98.5% 매칭)</td></tr>
+    <tr><td><code>insurance_company.hiwebnetUse</code></td><td>하이웹넷 대상 보험사 여부. 현재 32개사 (서비스 교집합 18)</td></tr>
+    <tr><td><code>instead_medical.isHiwebnetOnly</code></td><td><b>전용건 식별 플래그 (신설)</b></td></tr>
+    <tr><td><code>instead_medical.status</code></td><td>검수완료 → 하이웹넷전용청구중(신설) → 청구서발송 / 서류발급실패</td></tr>
+    <tr><td><code>instead_medical.hiwebnetCheckCount</code></td><td>재시도 횟수. 0=시도 전, 1~4=재시도 중, 5 이상=최종 실패, -1=최종 실패 확정</td></tr>
+    <tr><td><code>zzalang_config 'hiwebnetOnlyExposure'</code></td><td>전체 ON/OFF 스위치 (기본 OFF, 실시간)</td></tr>
+    <tr><td><code>instead_request_temp.tempData</code></td><td>임시저장 (병약국, 보험사). 조건 변경 시 통삭제</td></tr>
+  </table>
+  <h3>상태 전이 (전용건)</h3>
+  <table>
+    <tr><th>현재 상태</th><th>트리거</th><th>다음 상태</th></tr>
+    <tr><td>검수완료</td><td>하이웹넷 청구 진입</td><td>하이웹넷전용청구중</td></tr>
+    <tr><td>하이웹넷전용청구중</td><td>재시도 진행 (최대 5회)</td><td>하이웹넷전용청구중 유지</td></tr>
+    <tr><td>하이웹넷전용청구중</td><td>청구 성공</td><td>청구서발송</td></tr>
+    <tr><td>하이웹넷전용청구중</td><td>재시도 모두 실패</td><td>서류발급실패 (+사유 하이웹넷청구불가)</td></tr>
+    <tr><td>서류발급실패</td><td>영업일 저녁 6시 일괄</td><td>자동환불 (취소완료)</td></tr>
+  </table>
+</section>
+
+<!-- 10 -->
+<section id="s10">
+  <h2><span class="badge">규모</span> 숫자로 보는 기대효과 (깔때기)</h2>
+  <p>4-5월 2개월 실측 기준. 상한에서 단계별로 깎인 현실치.</p>
+  <div class="card">
+    <svg viewBox="0 0 760 250" width="100%" style="max-width:760px">
+      <defs><linearGradient id="fn" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--only)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+      <g font-size="13" font-weight="700" fill="#fff" text-anchor="middle">
+        <rect x="60" y="20" width="640" height="40" rx="8" fill="url(#fn)" opacity=".9"/>
+        <text x="380" y="45">공급 — 노출 가능 병약국 (서비스 타입) ≈ 1.4만 개</text>
+        <rect x="130" y="74" width="500" height="40" rx="8" fill="url(#fn)" opacity=".72"/>
+        <text x="380" y="99">추가 신청 가능 고객 (국세청 기준) ≈ 4.6만 명</text>
+        <rect x="190" y="128" width="380" height="40" rx="8" fill="url(#fn)" opacity=".56"/>
+        <text x="380" y="153">└ 보험사 하이웹넷 대상 82.7% ≈ 3.8만 명</text>
+        <rect x="250" y="182" width="260" height="40" rx="8" fill="url(#fn)" opacity=".42"/>
+        <text x="380" y="207">└ 청구 성공 80% ≈ 3.0만 명</text>
+      </g>
+    </svg>
+  </div>
+  <div class="kpi" style="margin-top:6px">
+    <div class="box"><div class="num" style="color:var(--warn)">≈7.7억</div><div class="lbl">수수료 매출 2개월 (월 ≈3.8억)</div></div>
+    <div class="box"><div class="num">92.1%</div><div class="lbl">청구 도달 시 성공률 (상반기 실측)</div></div>
+    <div class="box"><div class="num">75~85%</div><div class="lbl">end-to-end 보수 가정 성공률</div></div>
+  </div>
+  <div class="callout" style="margin-top:10px"><b>청구 성공 80%는 측정값이 아니라 보수 가정</b> — 실측 "청구 도달 시" 성공률은 92.1%인데, 그 앞 단계(사전조회, 영수증 조회)의 탈락까지 감안하면 end-to-end 75~85%로 추정 → 그 중간값 80%를 base case로 사용. 실패 1위였던 요양기관 매칭 실패(82%)는 하이웹넷 확인 병약국만 열어 구조적으로 제외됨.</div>
+  <p class="small">위는 2개월 실수요 한정. 공급 풀(1.4만)로 수요가 누적되면 상회 가능. 상세 : <code>하이웹넷_병약국_매핑분석.xlsx</code></p>
+</section>
+
+<!-- B4 테스트 방식 -->
+<section id="sB4">
+  <h2><span class="badge">테스트</span> 어떻게 테스트하나 (데이터)</h2>
+  <div class="callout warn"><b>전제 : 하이웹넷 API는 테스트/스테이지 환경이 없음</b> — 스테이지에서 돌려도 하이웹넷은 실운영계에 붙어야 하고, 그래서 청구가 실제 보험사까지 발송될 수 있음.</div>
+  <p><b>핵심 구분 하나</b> — 하이웹넷 "발송 성공"(우리 상태 <code>청구서발송</code>) ≠ 보험사 지급. 하이웹넷이 보험사에 청구서를 넘기면 우리 시스템은 그 순간 성공 처리하고, 보험사가 나중에 거절하든 지급하든 그건 별개 영역. 그래서 실제 병약국 데이터로 보내도 <b>보험사가 거절하면 실제 돈은 안 나가면서 성공 경로는 검증</b>됨.</p>
+  <div class="two-col">
+    <div class="card" style="border-color:rgba(65,209,143,.4)">
+      <span class="pill ok">안전, 대부분 여기서 검증</span>
+      <h3 style="margin-top:10px">실패, 환불 경로</h3>
+      <p class="mini">일부러 실패할 데이터로 보냄(요양기관 조회 안 됨, 영수증 없음, 보험 미가입 조합 등) → 재시도 → 최종실패 → 저녁 6시 환불까지 실지급 위험 없이 확인. 상태 전이, 배당 제외, 알림톡, 재신청, 임시저장 통삭제, 스위치 OFF 차단 등 로직 대부분 커버.</p>
+    </div>
+    <div class="card" style="border-color:rgba(255,180,84,.4)">
+      <span class="pill warn">실발송 필요, 실지급 통제</span>
+      <h3 style="margin-top:10px">성공 경로</h3>
+      <p class="mini">실제 하이웹넷 가용 병약국 + 실제 영수증으로 보내야 발송 성공이 뜸 → 실제 청구가 보험사로 나감. 실지급을 막으려면 보험 미가입/계약 안 맞는 조합으로 보내 보험사가 거절하게. (또는 테스터 본인 실제 진료 건으로 진짜 청구받고 사후 정산)</p>
+    </div>
+  </div>
+  <p class="small">결제 : 전용건은 실결제(토스)만 되므로, 테스트도 소액 실결제 후 환불 경로로 회수. BE, QA와 확정할 것 — 성공 경로 실발송 건수, 실지급 통제 조합, 실결제 회수 프로세스.</p>
+</section>
+
+<!-- 11 -->
+<section id="s11">
+  <h2><span class="badge">참고</span> 용어집</h2>
+  <table>
+    <tr><th>용어</th><th>뜻</th></tr>
+    <tr><td>하이웹넷</td><td>병원, 약국 의료비를 전산으로 보험사에 청구해주는 외부 시스템. 요양기관기호로 보험사에 바로 전자청구</td></tr>
+    <tr><td>대신청구</td><td>대리인이 병원 방문해 서류 떼 청구하는 MP 기존 방식</td></tr>
+    <tr><td>전용건</td><td>대신청구 불가 + 하이웹넷 가능 병약국 신청. isHiwebnetOnly=true</td></tr>
+    <tr><td>요양기관기호</td><td>병원, 약국 식별번호. 하이웹넷 청구의 키</td></tr>
+    <tr><td>검수</td><td>신분증, 전자서명 확인 단계</td></tr>
+    <tr><td>하이웹넷전용청구중</td><td>전용건이 청구, 재시도 중임을 나타내는 신설 상태값</td></tr>
+    <tr><td>서류발급실패</td><td>최종 실패 상태. 저녁 6시에 자동환불</td></tr>
+    <tr><td>폴리스</td><td>상담원이 쓰는 관리자(어드민) 화면</td></tr>
+    <tr><td>자비스 v3</td><td>신청 진행현황을 받아가는 외부 시스템(삼쩜삼). 새 상태값이 그쪽에도 노출됨</td></tr>
+  </table>
+  <div class="footer">
+    <a href="hiwebnet-wireframe.html" style="color:var(--only);font-weight:700;text-decoration:none">→ 화면 변경 와이어프레임 보기</a><br><br>
+    하이웹넷 전용건 온보딩 / HOSPITAL-162 기준 / 원문 : 하이웹넷_대고객_적용확대_기획.md / 하이웹넷_케이스별_워크플로우.md<br>
+    BE 시나리오 : 하이웹넷전용건_시나리오별_동작.md
+  </div>
+</section>
+</main>
+</div>
+
+<script>
+// scrollspy
+const links=[...document.querySelectorAll('#nav a')];
+const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+const spy=()=>{let i=0;for(let k=0;k<secs.length;k++){if(secs[k].getBoundingClientRect().top<140)i=k;}if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4)i=secs.length-1;links.forEach(l=>l.classList.remove('active'));links[i]&&links[i].classList.add('active');};
+document.addEventListener('scroll',spy,{passive:true});spy();
+links.forEach(a=>a.addEventListener('click',e=>{e.preventDefault();document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});}));
+
+// simulator
+const tgs=[...document.querySelectorAll('.tg')];
+const labels={switch:'전체 스위치',ins:'보험사 하이웹넷 대상',med:'병약국 가용'};
+function renderSim(){
+  const state={};tgs.forEach(t=>state[t.dataset.k]=t.classList.contains('on'));
+  tgs.forEach(t=>{const on=t.classList.contains('on');t.querySelector('.s-state').innerHTML=on?'<span class="s-on">ON</span>':'<span class="s-off">OFF</span>';});
+  const off=Object.keys(state).filter(k=>!state[k]);
+  const r=document.getElementById('simResult');
+  if(off.length===0){
+    r.className='result show';
+    r.innerHTML='<span class="ic">✅</span><div><div class="rt">노출됨 — 고객이 이 전용건 병약국을 검색, 신청 가능</div><div class="rd">3대 조건 모두 충족 (AND)</div></div>';
+  }else{
+    r.className='result hide';
+    r.innerHTML='<span class="ic">🚫</span><div><div class="rt">미노출 — 신청 불가</div><div class="rd">꺼진 조건 : '+off.map(k=>labels[k]).join(', ')+' / 하나라도 OFF면 차단</div></div>';
+  }
+}
+tgs.forEach(t=>t.addEventListener('click',()=>{t.classList.toggle('on');renderSim();}));
+renderSim();
+
+// case tabs
+const tabs=[...document.querySelectorAll('#caseTabs .tab')];
+tabs.forEach(tb=>tb.addEventListener('click',()=>{
+  tabs.forEach(x=>x.classList.remove('active'));tb.classList.add('active');
+  document.querySelectorAll('.case').forEach(c=>c.classList.remove('active'));
+  document.getElementById(tb.dataset.c).classList.add('active');
+}));
+</script>
+</body>
+</html>
