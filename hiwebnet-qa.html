@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>하이웹넷 Q&A</title>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--panel2:#1c2230;--line:#2a3340;--tx:#e6edf3;--tx2:#9aa7b5;--accent:#6b8afd;--accent2:#3a5bd0}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--tx);line-height:1.65;font-size:14.5px;word-break:keep-all}
+.wrap{max-width:760px;margin:0 auto;padding:26px 18px 70px}
+.head .badge{display:inline-block;background:var(--panel2);color:var(--accent);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:11px;border:1px solid var(--line)}
+.head h1{font-size:22px;margin:0 0 6px;letter-spacing:-.3px}
+.head p{margin:0 0 20px;color:var(--tx2);font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}
+.chip{background:var(--panel);border:1px solid var(--line);color:#c7d0dc;border-radius:18px;padding:7px 13px;font-size:12.5px;cursor:pointer;transition:.12s}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.askbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px}
+textarea{width:100%;border:none;outline:none;resize:none;font-family:inherit;font-size:14.5px;color:var(--tx);min-height:52px;background:transparent}
+textarea::placeholder{color:#5f6b7a}
+.askrow{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:10px}
+.hint{font-size:11.5px;color:#5f6b7a}
+.btn{background:var(--accent2);color:#fff;border:none;border-radius:9px;padding:9px 18px;font-size:13.5px;font-weight:700;cursor:pointer;transition:.12s;white-space:nowrap}
+.btn:hover{background:var(--accent)}
+.btn:disabled{background:#39435a;cursor:default}
+.answer{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:none}
+.answer.show{display:block}
+.answer .q{font-size:13px;color:var(--tx2);border-left:3px solid var(--accent);padding-left:10px;margin:0 0 14px;white-space:pre-wrap}
+.answer .a{font-size:14.5px}
+.answer .a h4{font-size:14.5px;margin:16px 0 6px}
+.answer .a strong{font-weight:700}
+.answer .a ul{margin:6px 0;padding-left:20px}
+.answer .a li{margin:3px 0}
+.answer .a code{background:var(--panel2);border-radius:4px;padding:1px 5px;font-size:12.5px;font-family:ui-monospace,Menlo,monospace;color:#ff9db8}
+.answer .a p{margin:8px 0}
+.loading{display:flex;align-items:center;gap:9px;color:var(--tx2);font-size:13px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.1s infinite}
+.dot:nth-child(2){animation-delay:.18s}.dot:nth-child(3){animation-delay:.36s}
+@keyframes pulse{0%,60%,100%{opacity:.28;transform:scale(.85)}30%{opacity:1;transform:scale(1)}}
+.err{color:#ff7b7b;font-size:13px}
+.hist{margin-top:22px}
+.hist .htitle{font-size:12px;color:var(--tx2);margin:6px 2px 8px}
+.hist .hitem{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px 14px;margin-bottom:8px}
+.hist .hq{font-size:12.5px;color:var(--accent);font-weight:600;cursor:pointer}
+.foot{margin-top:24px;font-size:11.5px;color:#5f6b7a;text-align:center;line-height:1.7}
+.setup{background:#2a1c10;border:1px solid #5a3d1a;color:#e0a24f;border-radius:11px;padding:13px 15px;font-size:12.5px;margin-bottom:16px;display:none}
+.setup.show{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <span class="badge">병원비환급 / 하이웹넷</span>
+    <h1>하이웹넷 Q&A</h1>
+    <p>하이웹넷 청구 프로세스에 대해 자유롭게 물어보세요. 청구 흐름, 상태값, 재시도, 보험사 변경 등 무엇이든 답해드려요.</p>
+  </div>
+
+  <div class="setup" id="setup">⚙️ 아직 Worker 주소가 설정되지 않았어요. HTML 상단의 <code>WORKER_URL</code> 값을 배포한 Worker 주소로 바꿔주세요. (배포가이드 참고)</div>
+
+  <div class="chips" id="chips"></div>
+
+  <div class="askbox">
+    <textarea id="q" placeholder="예 : 하이웹넷 전용건이 뭐야? 재시도는 언제 돌아?"></textarea>
+    <div class="askrow">
+      <span class="hint">⌘/Ctrl + Enter 로도 질문할 수 있어요</span>
+      <button class="btn" id="ask">질문하기</button>
+    </div>
+  </div>
+
+  <div class="answer" id="answer">
+    <div class="q" id="ansQ"></div>
+    <div class="a" id="ansA"></div>
+  </div>
+
+  <div class="hist" id="hist"></div>
+
+  <div class="foot">답변은 심어둔 하이웹넷 컨텍스트를 기반으로 생성돼요. 정확한 최신 정책은 지라 티켓, 기획 문서와 교차 확인하세요.</div>
+</div>
+
+<script>
+// ── 배포 후 여기에 Worker 주소를 넣어주세요 ─────────────────────
+// 예 : "https://hiwebnet-qa.내계정.workers.dev"
+const WORKER_URL = "https://hiwebnet-qa.kimdy220.workers.dev";
+// ───────────────────────────────────────────────────────────
+
+const SUGGESTED = [
+  "하이웹넷이 뭐야? 대신청구랑 뭐가 달라?",
+  "전용건(isHiwebnetOnly)이 뭐야?",
+  "재시도는 언제, 몇 번 돌아?",
+  "하이웹넷청구불가 상태가 뭐야?",
+  "청구 발송 채널이 어떻게 나뉘어?",
+  "보험사 변경하면 어떻게 처리돼?",
+  "자동환불은 언제 나가?",
+  "삼성화재만 한도에 하이웹넷이 포함되는 이유는?"
+];
+
+const chipsEl=document.getElementById('chips');
+SUGGESTED.forEach(s=>{
+  const b=document.createElement('button');
+  b.className='chip'; b.textContent=s;
+  b.onclick=()=>{ document.getElementById('q').value=s; ask(); };
+  chipsEl.appendChild(b);
+});
+
+const qEl=document.getElementById('q');
+const askBtn=document.getElementById('ask');
+const answerEl=document.getElementById('answer');
+const ansQ=document.getElementById('ansQ');
+const ansA=document.getElementById('ansA');
+const histEl=document.getElementById('hist');
+const history=[];
+
+if(!WORKER_URL) document.getElementById('setup').classList.add('show');
+
+function render(md){
+  let h=md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  h=h.replace(/`([^`]+)`/g,'<code>$1</code>');
+  h=h.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  const lines=h.split(/\n/);
+  let out='',inUl=false;
+  for(let ln of lines){
+    const t=ln.trim();
+    if(/^[-•]\s+/.test(t)){
+      if(!inUl){out+='<ul>';inUl=true;}
+      out+='<li>'+t.replace(/^[-•]\s+/,'')+'</li>';
+    } else {
+      if(inUl){out+='</ul>';inUl=false;}
+      if(t==='') out+='';
+      else if(/^#{1,4}\s+/.test(t)) out+='<h4>'+t.replace(/^#{1,4}\s+/,'')+'</h4>';
+      else out+='<p>'+t+'</p>';
+    }
+  }
+  if(inUl)out+='</ul>';
+  return out;
+}
+
+async function ask(){
+  const q=qEl.value.trim();
+  if(!q) return;
+  if(!WORKER_URL){ document.getElementById('setup').classList.add('show'); return; }
+  askBtn.disabled=true; askBtn.textContent='답변 중...';
+  answerEl.classList.add('show');
+  ansQ.textContent=q;
+  ansA.innerHTML='<div class="loading"><span class="dot"></span><span class="dot"></span><span class="dot"></span> 하이웹넷 컨텍스트로 답변 생성 중이에요</div>';
+  answerEl.scrollIntoView({behavior:'smooth',block:'start'});
+  try{
+    const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
+    const data=await res.json();
+    if(data.answer){
+      ansA.innerHTML=render(data.answer);
+      history.unshift({q,a:data.answer});
+      renderHist();
+    } else {
+      ansA.innerHTML='<div class="err">'+(data.error||'답변을 가져오지 못했어요.')+'</div>';
+    }
+  }catch(e){
+    ansA.innerHTML='<div class="err">연결 오류가 발생했어요 : '+(e&&e.message?e.message:e)+'</div>';
+  }finally{
+    askBtn.disabled=false; askBtn.textContent='질문하기';
+  }
+}
+
+function renderHist(){
+  if(history.length<2){histEl.innerHTML='';return;}
+  histEl.innerHTML='<div class="htitle">이전 질문</div>'+
+    history.slice(1).map((h,i)=>'<div class="hitem"><div class="hq" data-i="'+(i+1)+'">Q. '+h.q.replace(/</g,'&lt;')+'</div></div>').join('');
+  histEl.querySelectorAll('.hq').forEach(el=>{
+    el.onclick=()=>{ const h=history[+el.dataset.i]; qEl.value=h.q; answerEl.classList.add('show'); ansQ.textContent=h.q; ansA.innerHTML=render(h.a); answerEl.scrollIntoView({behavior:'smooth'}); };
+  });
+}
+
+askBtn.onclick=ask;
+qEl.addEventListener('keydown',e=>{ if((e.metaKey||e.ctrlKey)&&e.key==='Enter') ask(); });
+</script>
+</body>
+</html>
