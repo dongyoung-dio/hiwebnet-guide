@@ -588,7 +588,7 @@
       <div style="font-size:15px;font-weight:700;margin-bottom:3px">여기 없는 질문이 있나요?</div>
       <div style="font-size:13px;color:var(--mut,#9aa7b5)">AI에게 직접 물어보세요. 하이웹넷 전체 맥락 기반으로 실시간 답변해요.</div>
     </div>
-    <a href="hiwebnet-qa.html" target="_blank" style="background:#3a5bd0;color:#fff;text-decoration:none;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;white-space:nowrap">💬 하이웹넷 Q&A 열기</a>
+    <button onclick="openQA()" style="background:#3a5bd0;color:#fff;border:none;cursor:pointer;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;white-space:nowrap">💬 하이웹넷 Q&A 열기</button>
   </div>
 </section>
 
@@ -661,6 +661,37 @@ cbtabs.forEach(tb=>tb.addEventListener('click',()=>{
   document.getElementById(tb.dataset.c).classList.add('active');
 }));
 </script>
-<a href="hiwebnet-qa.html" target="_blank" style="position:fixed;right:22px;bottom:22px;background:#3a5bd0;color:#fff;text-decoration:none;border-radius:26px;padding:12px 20px;font-size:14px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.35);z-index:50">💬 질문하기</a>
+<button onclick="openQA()" style="position:fixed;right:22px;bottom:22px;background:#3a5bd0;color:#fff;border:none;cursor:pointer;border-radius:26px;padding:12px 20px;font-size:14px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.35);z-index:50">💬 질문하기</button>
+
+<div id="qaOverlay" onclick="closeQA()"></div>
+<div id="qaPanel">
+  <div class="qahead"><span>💬 하이웹넷 Q&A</span><button class="qaclose" onclick="closeQA()" aria-label="닫기">×</button></div>
+  <iframe id="qaFrame" title="하이웹넷 Q&A"></iframe>
+</div>
+<style>
+#qaOverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.25s;z-index:80}
+#qaOverlay.open{opacity:1;pointer-events:auto}
+#qaPanel{position:fixed;top:0;right:0;height:100%;width:min(460px,100%);background:#0d1117;box-shadow:-6px 0 24px rgba(0,0,0,.45);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:81;display:flex;flex-direction:column}
+#qaPanel.open{transform:translateX(0)}
+#qaPanel .qahead{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #2a3340;color:#e6edf3;font-weight:700;font-size:14px}
+#qaPanel .qaclose{background:none;border:none;color:#9aa7b5;font-size:24px;cursor:pointer;line-height:1;padding:0 4px}
+#qaPanel iframe{border:none;flex:1;width:100%}
+</style>
+<script>
+let qaLoaded=false;
+function openQA(){
+  const fr=document.getElementById('qaFrame');
+  if(!qaLoaded){fr.src='hiwebnet-qa.html';qaLoaded=true;}
+  document.getElementById('qaOverlay').classList.add('open');
+  document.getElementById('qaPanel').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeQA(){
+  document.getElementById('qaOverlay').classList.remove('open');
+  document.getElementById('qaPanel').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeQA(); });
+</script>
 </body>
 </html>
