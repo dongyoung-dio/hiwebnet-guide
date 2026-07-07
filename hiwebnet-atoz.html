@@ -108,11 +108,10 @@
   <a href="#s5"><span class="n">5</span>청구 워크플로우</a>
   <a href="#s6"><span class="n">6</span>재시도, 배치</a>
   <a href="#s7"><span class="n">7</span>상태값</a>
-  <a href="#s8"><span class="n">8</span>병원 vs 약국</a>
-  <a href="#s9"><span class="n">9</span>전용건 (이번 변화)</a>
-  <a href="#s10"><span class="n">10</span>API 지도, 테스트</a>
-  <a href="#s11"><span class="n">11</span>FAQ</a>
-  <a href="#s12"><span class="n">12</span>용어집</a>
+  <a href="#s9"><span class="n">8</span>전용건 (이번 변화)</a>
+  <a href="#s10"><span class="n">9</span>API 지도</a>
+  <a href="#s11"><span class="n">10</span>FAQ</a>
+  <a href="#s12"><span class="n">11</span>용어집</a>
 </nav>
 <main>
 
@@ -179,8 +178,10 @@
 
         <path d="M140,125 L198,125" stroke="var(--dim)" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
         <path d="M330,125 L388,125" stroke="var(--dim)" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
-        <path d="M530,120 C560,110 565,80 588,62" stroke="var(--dim)" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
-        <path d="M530,130 C560,140 565,170 588,188" stroke="var(--dim)" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+        <path d="M588,62 C562,80 556,102 532,118" stroke="var(--dim)" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+        <path d="M530,132 C560,142 565,170 588,188" stroke="var(--dim)" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+        <text x="556" y="86" fill="var(--accent)" font-size="10.5">조회</text>
+        <text x="556" y="166" fill="var(--only)" font-size="10.5">청구</text>
       </g>
     </svg>
   </div>
@@ -217,6 +218,7 @@
 <section id="s3b">
   <h2><span class="badge">중요</span> 청구 발송 채널 (자동청구)</h2>
   <p>MP가 보험사에 청구를 보낼 때 <b>채널이 하나가 아니에요.</b> 하이웹넷은 그중 하나예요. 발송은 자동 시스템(claim_job)이 채널을 구분해 처리해요. 이걸 알아야 하이웹넷의 위치가 이해돼요.</p>
+  <div class="callout"><b>자동청구가 뭐예요?</b> 예전엔 사람이 채널별로 청구를 챙겨 보냈다면, 지금은 검수가 끝나면 <b>시스템이 채널(하이웹넷/팩스/이메일/등기)을 자동으로 정해 대기열(큐)에 넣고 순서대로 발송</b>해요. 여기서 "큐(대기열)"는 청구 건들이 줄 서서 차례로 처리되는 곳이라고 보면 돼요. 그래서 특정 채널에 건이 몰리면 뒤 건들이 밀려요.</div>
   <div class="grid g2">
     <div class="card">
       <h3 style="margin-top:0">4가지 발송 채널 (<code>claim_job.method</code>)</h3>
@@ -298,9 +300,9 @@
   <div class="callout ok"><b>기억할 점</b> — 여기서 "청구 성공"은 <b>보험사에 청구서가 전달된 것</b>이에요. 실제 지급, 심사는 그 이후 보험사가 결정해요.</div>
 
   <h3>전체 청구 흐름 (한눈에)</h3>
-  <p class="small">정상 흐름 + 서비스 일시불가(900) 재시도 + 청구 실패 재청구 + 최종 실패 분기를 한 그림으로.</p>
+  <p class="small">검수 직후 진행상태는 <b>대리인미지정</b>이에요(하이웹넷 결과와 별개). 그 위에서 하이웹넷 청구가 돌고, <b>성공하면 청구서발송</b>으로 바뀌고 <b>실패하면 대리인미지정이 그대로 유지</b>돼요.</p>
   <div class="card" style="overflow-x:auto">
-    <svg width="100%" viewBox="0 0 680 600" style="min-width:600px" role="img">
+    <svg width="100%" viewBox="0 0 700 620" style="min-width:640px" role="img">
       <defs>
         <marker id="wh" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><path d="M0,0 L7,4 L0,8 Z" fill="#8a97a6"/></marker>
         <marker id="wg" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><path d="M0,0 L7,4 L0,8 Z" fill="#22b563"/></marker>
@@ -308,39 +310,51 @@
       </defs>
       <style>
         .wc{fill:#161b22} .wt{fill:#e6edf3;font-size:13px;font-weight:650} .ws{fill:#9aa7b5;font-size:10.5px}
-        .wl{font-size:11px;font-weight:700} .wn{stroke:#8a97a6;stroke-width:1.6;fill:none} .wgr{stroke:#22b563;stroke-width:1.8;fill:none} .wrd{stroke:#e5687b;stroke-width:1.8;fill:none}
+        .wl{font-size:11px;font-weight:700} .wtag{font-size:9.5px;font-weight:800}
+        .wn{stroke:#8a97a6;stroke-width:1.6;fill:none} .wgr{stroke:#22b563;stroke-width:1.8;fill:none} .wrd{stroke:#e5687b;stroke-width:1.8;fill:none}
       </style>
-      <path class="wn" d="M150,66 L150,86" marker-end="url(#wh)"/>
-      <path class="wn" d="M150,134 L150,158" marker-end="url(#wh)"/>
-      <path class="wn" d="M150,244 L150,268" marker-end="url(#wh)"/>
-      <path class="wn" d="M150,314 L150,338" marker-end="url(#wh)"/>
-      <path class="wn" d="M150,406 L150,430" marker-end="url(#wh)"/>
-      <path class="wgr" d="M150,516 L150,540" marker-end="url(#wg)"/>
-      <path class="wn" d="M196,201 C300,201 320,186 396,186" marker-end="url(#wh)"/>
-      <path class="wrd" d="M505,220 L505,262" marker-end="url(#wr)"/>
-      <path class="wn" d="M196,453 C300,453 320,448 396,448" marker-end="url(#wh)"/>
-      <path class="wrd" d="M505,472 L505,506" marker-end="url(#wr)"/>
-      <text x="163" y="256" class="wl" fill="#2fbf6d">정상</text>
-      <text x="300" y="176" class="wl" fill="#e0870f" text-anchor="middle">일시불가 900</text>
-      <text x="163" y="528" class="wl" fill="#2fbf6d">성공</text>
-      <text x="300" y="443" class="wl" fill="#e5687b" text-anchor="middle">실패</text>
-      <text x="519" y="246" class="wl" fill="#e5687b">소진</text>
-      <text x="519" y="493" class="wl" fill="#e5687b">2차 실패</text>
-      <g><rect class="wc" x="55" y="22" width="190" height="44" rx="11" stroke="#6b8afd" stroke-width="1.4"/><text class="wt" x="150" y="49" text-anchor="middle">검수 완료</text></g>
-      <g><rect class="wc" x="55" y="90" width="190" height="44" rx="11" stroke="#6b8afd" stroke-width="1.4"/><text class="wt" x="150" y="117" text-anchor="middle">요양기관 조회</text></g>
-      <polygon class="wc" points="150,160 200,201 150,242 100,201" stroke="#2a3340" stroke-width="1.4"/>
-      <text class="wt" x="150" y="199" text-anchor="middle" font-size="12">서비스</text><text class="wt" x="150" y="214" text-anchor="middle" font-size="12">상태?</text>
-      <g><rect class="wc" x="55" y="270" width="190" height="44" rx="11" stroke="#6b8afd" stroke-width="1.4"/><text class="wt" x="150" y="297" text-anchor="middle">환자, 영수 조회</text></g>
-      <g><rect class="wc" x="55" y="340" width="190" height="44" rx="11" stroke="#6b8afd" stroke-width="1.4"/><text class="wt" x="150" y="367" text-anchor="middle">청구 (claim)</text></g>
-      <polygon class="wc" points="150,412 200,453 150,494 100,453" stroke="#2a3340" stroke-width="1.4"/>
-      <text class="wt" x="150" y="451" text-anchor="middle" font-size="12">청구</text><text class="wt" x="150" y="466" text-anchor="middle" font-size="12">결과?</text>
-      <g><rect x="55" y="542" width="190" height="46" rx="11" fill="rgba(34,181,99,.12)" stroke="#22b563" stroke-width="1.6"/><text class="wt" x="150" y="565" text-anchor="middle" fill="#2fbf6d">청구서발송 ✓</text><text class="ws" x="150" y="580" text-anchor="middle">→ 거래 성공 통보</text></g>
-      <g><rect x="396" y="160" width="218" height="52" rx="11" fill="rgba(224,135,15,.1)" stroke="#e0870f" stroke-width="1.5"/><text class="wt" x="505" y="182" text-anchor="middle" fill="#e0a24f">재시도</text><text class="ws" x="505" y="198" text-anchor="middle">영업일 10, 12, 14, 16시, 회복 대기</text></g>
-      <g><rect x="396" y="264" width="218" height="46" rx="11" fill="rgba(229,72,77,.09)" stroke="#e5484d" stroke-width="1.5"/><text class="wt" x="505" y="287" text-anchor="middle" fill="#e56a6f">최종 실패</text><text class="ws" x="505" y="302" text-anchor="middle">회복되면 정상 청구로 복귀</text></g>
-      <g><rect x="396" y="428" width="218" height="46" rx="11" fill="rgba(224,135,15,.1)" stroke="#e0870f" stroke-width="1.5"/><text class="wt" x="505" y="451" text-anchor="middle" fill="#e0a24f">재청구</text><text class="ws" x="505" y="466" text-anchor="middle">성공하면 청구서발송</text></g>
-      <g><rect x="396" y="508" width="218" height="46" rx="11" fill="rgba(229,72,77,.09)" stroke="#e5484d" stroke-width="1.5"/><text class="wt" x="505" y="531" text-anchor="middle" fill="#e56a6f">대리인미지정</text><text class="ws" x="505" y="546" text-anchor="middle">사람 개입 필요 + CS 알림</text></g>
+      <path class="wn" d="M160,62 L160,80" marker-end="url(#wh)"/>
+      <path class="wn" d="M160,138 L160,158" marker-end="url(#wh)"/>
+      <path class="wn" d="M160,202 L160,212" marker-end="url(#wh)"/>
+      <path class="wn" d="M160,298 L160,316" marker-end="url(#wh)"/>
+      <path class="wn" d="M160,360 L160,378" marker-end="url(#wh)"/>
+      <path class="wn" d="M160,422 L160,440" marker-end="url(#wh)"/>
+      <path class="wgr" d="M160,526 L160,546" marker-end="url(#wg)"/>
+      <path class="wn" d="M212,256 C300,256 340,257 398,258" marker-end="url(#wh)"/>
+      <path class="wn" d="M212,484 C300,484 340,482 398,480" marker-end="url(#wh)"/>
+      <path class="wrd" d="M520,504 L520,526" marker-end="url(#wr)"/>
+      <text x="176" y="152" class="wl" fill="#5ec8d8">하이웹넷 청구 시도</text>
+      <text x="172" y="312" class="wl" fill="#2fbf6d">정상</text>
+      <text x="172" y="540" class="wl" fill="#2fbf6d">성공</text>
+      <text x="305" y="250" class="wl" fill="#e0870f" text-anchor="middle">일시불가 900</text>
+      <text x="305" y="474" class="wl" fill="#e5687b" text-anchor="middle">실패</text>
+      <text x="534" y="520" class="wl" fill="#e5687b">2차 실패</text>
+      <g><rect class="wc" x="60" y="20" width="200" height="42" rx="11" stroke="#6b8afd" stroke-width="1.4"/><text class="wt" x="160" y="46" text-anchor="middle">검수 완료</text></g>
+      <g>
+        <rect x="60" y="82" width="200" height="56" rx="11" fill="rgba(138,151,166,.1)" stroke="#8a97a6" stroke-width="1.5"/>
+        <rect x="70" y="88" width="52" height="16" rx="8" fill="rgba(138,151,166,.22)"/><text class="wtag" x="96" y="100" text-anchor="middle" fill="#c7d0dc">진행상태</text>
+        <text class="wt" x="160" y="119" text-anchor="middle">대리인미지정</text>
+        <text class="ws" x="160" y="133" text-anchor="middle">검수 직후 상태 (하이웹넷과 별개)</text>
+      </g>
+      <g><rect class="wc" x="60" y="160" width="200" height="42" rx="11" stroke="#6b8afd" stroke-width="1.4"/><text class="wt" x="160" y="186" text-anchor="middle">요양기관 조회</text></g>
+      <polygon class="wc" points="160,214 210,256 160,298 110,256" stroke="#2a3340" stroke-width="1.4"/>
+      <text class="wt" x="160" y="252" text-anchor="middle" font-size="12">서비스</text><text class="wt" x="160" y="267" text-anchor="middle" font-size="12">상태?</text>
+      <g><rect class="wc" x="60" y="318" width="200" height="42" rx="11" stroke="#6b8afd" stroke-width="1.4"/><text class="wt" x="160" y="344" text-anchor="middle">환자, 영수 조회</text></g>
+      <g><rect class="wc" x="60" y="380" width="200" height="42" rx="11" stroke="#6b8afd" stroke-width="1.4"/><text class="wt" x="160" y="406" text-anchor="middle">청구 (claim)</text></g>
+      <polygon class="wc" points="160,442 210,484 160,526 110,484" stroke="#2a3340" stroke-width="1.4"/>
+      <text class="wt" x="160" y="480" text-anchor="middle" font-size="12">청구</text><text class="wt" x="160" y="495" text-anchor="middle" font-size="12">결과?</text>
+      <g>
+        <rect x="60" y="548" width="200" height="56" rx="11" fill="rgba(34,181,99,.12)" stroke="#22b563" stroke-width="1.6"/>
+        <rect x="70" y="555" width="52" height="16" rx="8" fill="rgba(34,181,99,.22)"/><text class="wtag" x="96" y="567" text-anchor="middle" fill="#2fbf6d">진행상태</text>
+        <text class="wt" x="160" y="586" text-anchor="middle" fill="#2fbf6d">청구서발송 ✓</text>
+        <text class="ws" x="160" y="600" text-anchor="middle">진행상태 전환 + 거래 성공 통보</text>
+      </g>
+      <g><rect x="400" y="226" width="240" height="64" rx="11" fill="rgba(224,135,15,.1)" stroke="#e0870f" stroke-width="1.5"/><text class="wt" x="520" y="249" text-anchor="middle" fill="#e0a24f">재시도</text><text class="ws" x="520" y="266" text-anchor="middle">영업일 10, 12, 14, 16시 회복 대기</text><text class="ws" x="520" y="281" text-anchor="middle">소진 시 실패 / 회복 시 정상 복귀</text></g>
+      <g><rect x="400" y="456" width="240" height="48" rx="11" fill="rgba(224,135,15,.1)" stroke="#e0870f" stroke-width="1.5"/><text class="wt" x="520" y="478" text-anchor="middle" fill="#e0a24f">재청구</text><text class="ws" x="520" y="494" text-anchor="middle">성공하면 청구서발송</text></g>
+      <g><rect x="400" y="528" width="240" height="58" rx="11" fill="rgba(138,151,166,.1)" stroke="#8a97a6" stroke-width="1.5"/><text class="wt" x="520" y="550" text-anchor="middle">대리인미지정 (유지)</text><text class="ws" x="520" y="567" text-anchor="middle">상태 그대로 → 대신청구로</text><text class="ws" x="520" y="581" text-anchor="middle">(전용건은 자동환불)</text></g>
     </svg>
   </div>
+  <div class="callout"><b>핵심</b> — <b>대리인미지정</b>은 실패의 결과가 아니라 <b>검수 직후부터의 진행상태</b>예요. 하이웹넷 청구가 성공하면 <b>청구서발송</b>으로 전환되고, 실패(재시도, 재청구 소진)하면 대리인미지정이 <b>그대로 유지</b>돼서 대신청구로 이어져요(전용건은 자동환불).</div>
   <div class="legend"><span><i style="background:#6b8afd"></i>단계</span><span><i style="background:#e0870f"></i>재시도, 재청구</span><span><i style="background:#22b563"></i>성공</span><span><i style="background:#e5484d"></i>실패</span></div>
 
   <svg width="0" height="0" style="position:absolute"><defs>
@@ -361,7 +375,6 @@
   <div class="cbtabs" id="cbTabs">
     <div class="cbtab active" data-c="k3">재청구</div>
     <div class="cbtab" data-c="k4">최종 실패</div>
-    <div class="cbtab" data-c="k5">병원 vs 약국</div>
     <div class="cbtab" data-c="k6">보험사 한도</div>
   </div>
 
@@ -398,25 +411,6 @@
     <div class="callout warn"><b>전용건이라면</b> — 대신청구로 넘길 경로가 없으므로, 최종 실패 시 <b>서류발급실패 → 저녁 6시 자동환불</b>로 종결돼요(섹션 9).</div>
   </div>
 
-  <div class="cbcase" id="k5">
-    <div class="card svgcard">
-      <svg width="100%" viewBox="0 0 680 200" style="min-width:600px" role="img">
-        <path class="kln" d="M218,55 L242,55" marker-end="url(#mh)"/><path class="kln" d="M396,55 L420,55" marker-end="url(#mh)"/>
-        <path class="kln" d="M188,145 L210,145" marker-end="url(#mh)"/><path class="kln" d="M364,145 L386,145" marker-end="url(#mh)"/><path class="kln" d="M494,145 L516,145" marker-end="url(#mh)"/>
-        <text x="20" y="60" font-size="12" font-weight="800" fill="#7c9bff">병원</text>
-        <rect class="kdia" x="66" y="34" width="150" height="42" rx="10"/><text class="kt" x="141" y="60" text-anchor="middle">요양기관 조회</text>
-        <rect class="kdia" x="244" y="34" width="150" height="42" rx="10"/><text class="kt" x="319" y="60" text-anchor="middle">환자, 영수 조회</text>
-        <rect class="kg" x="422" y="34" width="120" height="42" rx="10"/><text class="kt" x="482" y="60" text-anchor="middle" fill="#2fbf6d">claim</text>
-        <text x="20" y="150" font-size="12" font-weight="800" fill="#b593ff">약국</text>
-        <rect class="kdia" x="66" y="124" width="120" height="42" rx="10"/><text class="kt" x="126" y="150" text-anchor="middle">요양기관 조회</text>
-        <rect class="kp" x="212" y="120" width="150" height="50" rx="10"/><text class="kt" x="287" y="140" text-anchor="middle" fill="#b593ff">보험 가입 확인</text><text class="ks" x="287" y="156" text-anchor="middle">checkInsuranceMember</text>
-        <rect class="kdia" x="388" y="124" width="104" height="42" rx="10"/><text class="kt" x="440" y="150" text-anchor="middle">영수 조회</text>
-        <rect class="kg" x="518" y="124" width="120" height="42" rx="10"/><text class="kt" x="578" y="150" text-anchor="middle" fill="#2fbf6d">pharmClaim</text>
-      </svg>
-    </div>
-    <p class="mini">약국은 환자 식별이 PAT_ID 기반이라 주민번호가 필요 없고, 보험 가입 확인이 실패하면 그 건은 건너뛰어요(skip).</p>
-  </div>
-
   <div class="cbcase" id="k6">
     <div class="card svgcard">
       <svg width="100%" viewBox="0 0 680 84" style="min-width:560px" role="img">
@@ -429,7 +423,7 @@
     </div>
     <p class="mini">보험사마다 하루 청구 한도(<code>dailyClaimLimit</code>)가 있어요(예 : DB손해, KB손해 2,000 / 현대해상, 삼성화재 1,200). 초과 시 다음 영업일로 이월돼서 며칠 걸리기도 해요. <b>하이웹넷 건이 이 한도에 포함되는지는 보험사마다 달라요 — 현재 삼성화재만 포함(hiwebnetIncludedInLimit=true), 나머지는 미포함.</b></p>
   </div>
-  <div class="legend"><span><i style="background:#6b8afd"></i>단계</span><span><i style="background:#e0870f"></i>재시도, 재청구</span><span><i style="background:#22b563"></i>성공</span><span><i style="background:#e5484d"></i>실패</span><span><i style="background:#a06bff"></i>약국 전용</span></div>
+  <div class="legend"><span><i style="background:#6b8afd"></i>단계</span><span><i style="background:#e0870f"></i>재시도, 재청구</span><span><i style="background:#22b563"></i>성공</span><span><i style="background:#e5484d"></i>실패</span></div>
 
 </section>
 
@@ -452,7 +446,8 @@
     </svg>
     <p class="small" style="margin-bottom:0">청구가 안 되면 <b>영업일 10, 12, 14, 16시</b>에 다시 시도해요. 매일 새벽엔 하이웹넷에서 <b>보험사 목록(2시), 병약국 목록(3시)</b>을 새로 받아 갱신해요.</p>
   </div>
-  <div class="callout warn"><b>재시도 조건</b> — 아무 실패나 재시도하는 게 아니라, 요양기관 조회에서 <b>"서비스 일시불가(SVC_ST=900)"</b>일 때 회복을 기다리며 재시도해요. 병원 전산 일시 장애라 잠시 후 정상(000)으로 돌아오면 성공하는 경우예요.</div>
+  <div class="callout warn"><b>① 첫 청구 중 재시도 (900 한정)</b> — 아무 실패나 재시도하는 게 아니라, 요양기관 조회에서 <b>"서비스 일시불가(SVC_ST=900)"</b>일 때 회복을 기다리며 영업일 10, 12, 14, 16시에 재시도해요(최대 5회). 병원 전산 일시 장애라 잠시 후 정상(000)으로 돌아오면 성공하는 경우예요.</div>
+  <div class="callout"><b>② 데일리 배치 재시도 (900만이 아님)</b> — 위 900 재시도와 별개로, 매일 오전 배치가 <b>대리인미지정(최종 실패) 건 전체</b>를 다시 훑어 재청구를 시도해요. 이건 900 에러에 한정되지 않아요. 재청구 실패 큐는 오전에 <b>2차까지(10시, 11시)</b> 돌고, 2차도 실패하면 큐에서 빠지면서 CS로 알림이 가요.<br><span class="small">정확한 배치 시각, 횟수는 스케줄러 설정 기준 (개발 확인). 핵심은 "첫 청구 900 재시도"와 "데일리 대리인미지정 재시도"가 별개로 돈다는 점.</span></div>
 </section>
 
 <!-- 7 -->
@@ -467,21 +462,6 @@
   </table>
 </section>
 
-<!-- 8 -->
-<section id="s8">
-  <h2><span class="badge">분기</span> 병원과 약국은 처리가 다르다</h2>
-  <p>같은 하이웹넷이라도 병원과 약국은 청구 방식이 조금 달라요. 기준은 <code>medical.code</code>가 <code>PHARMACY</code>인지 여부예요.</p>
-  <table>
-    <tr><th>구분</th><th>병원</th><th>약국</th></tr>
-    <tr><td>기관 조회</td><td>getHospitalInfo</td><td>getPharmList</td></tr>
-    <tr><td>영수 조회</td><td>getReceiptList</td><td>getPrsReceiptPayList</td></tr>
-    <tr><td>청구 API</td><td>claim</td><td>pharmClaim</td></tr>
-    <tr><td>보험 가입 확인</td><td>—</td><td>checkInsuranceMember 추가</td></tr>
-    <tr><td>환자 식별</td><td>주민번호 기반</td><td>PAT_ID 기반 (주민번호 불요)</td></tr>
-  </table>
-  <p class="small">약국도 먼저 병원 조회(getHospitalInfo)로 요양기관 ID를 확보한 뒤 약국 목록을 조회해요.</p>
-</section>
-
 <!-- 9 -->
 <section id="s9">
   <h2><span class="badge">이번 변화</span> "전용건"이 이 그림 어디에 있나</h2>
@@ -494,12 +474,14 @@
     <li>실패 시 : 재시도(최대 5회) → 최종 실패 → 저녁 6시 자동환불</li>
     <li>고객은 전용건인지 몰라도 됨 (일반 병약국과 동일 노출, 실패해도 환불이라 손해 없음)</li>
   </ul>
-  <p class="small">전용건 상세는 별도 온보딩(<code>하이웹넷_전용건_온보딩</code>)에서 더 깊게 다뤄요.</p>
+  <div class="callout"><b>일반 병약국과 뭐가 다르냐면</b> — 대신청구가 되는 병약국(둘 다 가능한 병약국 포함)은 <b>대리인이 배당</b>돼서, 하이웹넷이 안 되면 대신청구로 이어져요. 전용건은 대신청구 경로가 없어 <b>대리인 배당 없이</b> 하이웹넷만 시도하고, 최종 실패하면 자동환불로 끝나요. 이 배당 여부가 핵심 차이예요.</div>
+  <a class="doclink" href="hiwebnet-only-onboarding.html" target="_blank">📘 하이웹넷 전용건 온보딩 열기 →</a>
+  <p class="small">전용건의 신청, 노출 조건, 케이스별 처리, 화면 변화는 위 온보딩에서 더 깊게 다뤄요.</p>
 </section>
 
 <!-- 10 -->
 <section id="s10">
-  <h2><span class="badge">API</span> API 지도 + 직접 눌러보기</h2>
+  <h2><span class="badge">API</span> API 지도</h2>
   <p>하이웹넷 연동은 여러 API로 이뤄져요. 큰 그룹으로 나눠서 "무엇을 하는 API인지"부터 잡아요. (전체 필드 스펙은 아래 원문 문서 참고)</p>
 
   <a class="doclink" href="https://docs.google.com/document/d/1_B204snG2J_UG2dCQ_TlIt6zF8rrQe1k6canwQEQnRQ/edit" target="_blank">📄 하이웹넷 병원데이터 API 외부 연동 가이드 (원문 전체 스펙) 열기 →</a>
@@ -532,7 +514,7 @@
   <table>
     <tr><th>API</th><th>하는 일</th></tr>
     <tr><td>HWN_HWA_GetHospitals</td><td>병원 목록 조회</td></tr>
-    <tr><td>HWN_HWA_GetMedicalCenterInfo</td><td>요양기관 정보, 서비스 상태 조회 (아래 플레이그라운드)</td></tr>
+    <tr><td>HWN_HWA_GetMedicalCenterInfo</td><td>요양기관 정보, 서비스 상태(SVC_ST) 조회</td></tr>
     <tr><td>HWN_MP_GetBasicInfo</td><td>MP 전용 기본정보 검색</td></tr>
     <tr><td>BaseInfo_GetHospitalInfo</td><td>병원 기본정보</td></tr>
     <tr><td>Patient_GetPatient</td><td>환자 내원 여부 확인</td></tr>
@@ -548,28 +530,6 @@
     <tr><td>ISR_GetTreatmentList / GetReceipt1,2 / GetFeeDetail / GetPrescript / GetDisInfo</td><td>진료이력, 영수증, 세부내역, 원외처방, 진단명 조회 (청구서 구성용)</td></tr>
   </table>
 
-  <h3>직접 눌러보기 — 요양기관 정보 조회 (시뮬레이션)</h3>
-  <p class="small">실제 하이웹넷 호출이 아니라, 요청, 응답이 어떻게 생겼는지 학습하는 시뮬레이션이에요. 값을 바꿔 눌러보세요.</p>
-  <div class="pg">
-    <div class="row">
-      <div class="fld"><label>ID_GB (조회 방식)</label>
-        <select id="pgIdgb"><option value="CRN">CRN (사업자번호)</option><option value="YID">YID (요양기관기호)</option></select>
-      </div>
-      <div class="fld"><label>_YYK_ID (값)</label><input id="pgId" value="120-01-234567"></div>
-      <div class="fld"><label>CHK_SVC_YN (서비스 상태 체크)</label>
-        <select id="pgChk"><option value="Y">Y</option><option value="N">N</option></select>
-      </div>
-      <div class="fld"><label>응답 시나리오</label>
-        <select id="pgScn"><option value="ok">정상 (SVC_ST 000)</option><option value="900">서비스 일시불가 (900)</option></select>
-      </div>
-    </div>
-    <button class="btn" onclick="runPg()">▶ 요청 보내기</button>
-    <div class="io" style="margin-top:14px">
-      <div class="box"><div class="hd req">요청 (Request)</div><pre id="pgReq"></pre></div>
-      <div class="box"><div class="hd res-ok" id="pgResHd">응답 (Response)</div><pre id="pgRes"></pre></div>
-    </div>
-    <p class="note-pre small" style="margin-top:10px">SVC_ST : <code>000</code>=정상 / <code>900</code>=서비스 일시불가(재시도 대상). 재시도 로직이 이 900을 잡아서 회복을 기다려요.</p>
-  </div>
 </section>
 
 <!-- 11 -->
@@ -579,7 +539,6 @@
     <div class="faq"><div class="q">하이웹넷은 우리(MP)가 만든 건가요? <span class="ar">›</span></div><div class="a"><div class="in">아니요. 하이웹넷은 외부 전자청구 중계 플랫폼이에요. 우리는 그 API를 호출해서 우리 고객의 청구를 처리해요.</div></div></div>
     <div class="faq"><div class="q">"청구 성공"이면 고객이 돈을 받은 건가요? <span class="ar">›</span></div><div class="a"><div class="in">아니요. 하이웹넷 청구 성공 = 보험사에 청구서가 전달된 것이에요. 실제 지급, 심사는 그 이후 보험사가 결정해요.</div></div></div>
     <div class="faq"><div class="q">재시도는 왜, 언제 도나요? <span class="ar">›</span></div><div class="a"><div class="in">요양기관 조회에서 "서비스 일시불가(SVC_ST=900)"일 때, 병원 전산이 회복되길 기다리며 영업일 10/12/14/16시에 다시 시도해요. 최대 5회예요.</div></div></div>
-    <div class="faq"><div class="q">병원과 약국은 뭐가 다른가요? <span class="ar">›</span></div><div class="a"><div class="in">청구 API가 갈라져 있어요(claim vs pharmClaim). 약국은 보험 가입 확인이 추가되고 환자 식별이 PAT_ID 기반이라 주민번호가 필요 없어요. 기준은 medical.code가 PHARMACY인지예요.</div></div></div>
     <div class="faq"><div class="q">전용건이 기존 하이웹넷이랑 뭐가 다른가요? <span class="ar">›</span></div><div class="a"><div class="in">기존 하이웹넷은 대신청구의 보조 수단이었어요. 전용건은 대신청구가 안 되는 병약국을 하이웹넷으로만 청구하는 것이고, 최종 실패 시 자동환불로 종결돼요.</div></div></div>
     <div class="faq"><div class="q">모든 보험사가 하이웹넷이 되나요? <span class="ar">›</span></div><div class="a"><div class="in">아니요. hiwebnetUse=true인 보험사만 돼요. 현재 32개사, 그중 우리 서비스와 겹치는 18개사가 전용건 대상이에요.</div></div></div>
   </div>
@@ -621,32 +580,6 @@ const spy=()=>{let i=0;for(let k=0;k<secs.length;k++){if(secs[k].getBoundingClie
 document.addEventListener('scroll',spy,{passive:true});spy();
 links.forEach(a=>a.addEventListener('click',e=>{e.preventDefault();document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});}));
 
-// playground
-function runPg(){
-  const idgb=document.getElementById('pgIdgb').value;
-  const id=document.getElementById('pgId').value;
-  const chk=document.getElementById('pgChk').value;
-  const scn=document.getElementById('pgScn').value;
-  const req={_API_NAME:"HWN_HWA_GetMedicalCenterInfo",_COMP_ID:"test_id",_COMP_PASS:"***",_YYK_ID:id,ID_GB:idgb,CHK_SVC_YN:chk};
-  document.getElementById('pgReq').innerHTML=color(req);
-  const hd=document.getElementById('pgResHd');
-  let res;
-  if(scn==='900'){
-    res={YYK_ID:"11111111",YYK_NM:"테스트병원",SVC_ST:"900",SVC_ST_DESC:"서비스 일시불가"};
-    hd.className='hd res-bad';hd.textContent='응답 (Response) — 재시도 대상';
-  }else{
-    res={YYK_ID:"11111111",YYK_CRN:id,YYK_NM:"테스트병원",CEO_NM:"홍원장",SVC_ST:"000",SVC_ST_DESC:"정상"};
-    hd.className='hd res-ok';hd.textContent='응답 (Response) — 정상';
-  }
-  document.getElementById('pgRes').innerHTML=color(res);
-}
-function color(o){
-  let s=JSON.stringify(o,null,2);
-  s=s.replace(/"([^"]+)":/g,'<span class="k">"$1"</span>:');
-  s=s.replace(/: "([^"]*)"/g,': <span class="s">"$1"</span>');
-  return s;
-}
-runPg();
 
 // faq
 document.querySelectorAll('#faqBox .faq').forEach(f=>{
