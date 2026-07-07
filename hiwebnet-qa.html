@@ -24,7 +24,11 @@ textarea::placeholder{color:#5f6b7a}
 .btn{background:var(--accent2);color:#fff;border:none;border-radius:9px;padding:9px 18px;font-size:13.5px;font-weight:700;cursor:pointer;transition:.12s;white-space:nowrap}
 .btn:hover{background:var(--accent)}
 .btn:disabled{background:#39435a;cursor:default}
-.answer{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:none}
+.toolbar{display:flex;justify-content:flex-end;margin-top:14px;min-height:0}
+.clearbtn{background:none;border:1px solid var(--line);color:var(--tx2);border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;display:none}
+.clearbtn:hover{border-color:var(--accent);color:var(--accent)}
+.clearbtn.show{display:inline-block}
+.answer{margin-top:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:none}
 .answer.show{display:block}
 .answer .q{font-size:13px;color:var(--tx2);border-left:3px solid var(--accent);padding-left:10px;margin:0 0 14px;white-space:pre-wrap}
 .answer .a{font-size:14.5px;line-height:1.75}
@@ -58,7 +62,7 @@ textarea::placeholder{color:#5f6b7a}
     <p>하이웹넷 청구 프로세스에 대해 자유롭게 물어보세요. 청구 흐름, 상태값, 재시도, 보험사 변경 등 무엇이든 답해드려요.</p>
   </div>
 
-  <div class="setup" id="setup">⚙️ 아직 Worker 주소가 설정되지 않았어요. HTML 상단의 <code>WORKER_URL</code> 값을 배포한 Worker 주소로 바꿔주세요. (배포가이드 참고)</div>
+  <div class="setup" id="setup">⚙️ 아직 Worker 주소가 설정되지 않았어요. HTML 상단의 <code>WORKER_URL</code> 값을 배포한 Worker 주소로 바꿔주세요.</div>
 
   <div class="chips" id="chips"></div>
 
@@ -69,6 +73,8 @@ textarea::placeholder{color:#5f6b7a}
       <button class="btn" id="ask">질문하기</button>
     </div>
   </div>
+
+  <div class="toolbar"><button class="clearbtn" id="clear" onclick="clearQA()">🗑 대화 지우기</button></div>
 
   <div class="answer" id="answer">
     <div class="q" id="ansQ"></div>
@@ -81,8 +87,7 @@ textarea::placeholder{color:#5f6b7a}
 </div>
 
 <script>
-// ── 배포 후 여기에 Worker 주소를 넣어주세요 ─────────────────────
-// 예 : "https://hiwebnet-qa.내계정.workers.dev"
+// ── Worker 주소 (배포한 주소) ────────────────────────────────
 const WORKER_URL = "https://hiwebnet-qa.kimdy220.workers.dev";
 // ───────────────────────────────────────────────────────────
 
@@ -107,6 +112,7 @@ SUGGESTED.forEach(s=>{
 
 const qEl=document.getElementById('q');
 const askBtn=document.getElementById('ask');
+const clearBtn=document.getElementById('clear');
 const answerEl=document.getElementById('answer');
 const ansQ=document.getElementById('ansQ');
 const ansA=document.getElementById('ansA');
@@ -143,6 +149,7 @@ async function ask(){
   if(!WORKER_URL){ document.getElementById('setup').classList.add('show'); return; }
   askBtn.disabled=true; askBtn.textContent='답변 중...';
   answerEl.classList.add('show');
+  clearBtn.classList.add('show');
   ansQ.textContent=q;
   ansA.innerHTML='<div class="loading"><span class="dot"></span><span class="dot"></span><span class="dot"></span> 하이웹넷 컨텍스트로 답변 생성 중이에요</div>';
   answerEl.scrollIntoView({behavior:'smooth',block:'start'});
@@ -161,6 +168,17 @@ async function ask(){
   }finally{
     askBtn.disabled=false; askBtn.textContent='질문하기';
   }
+}
+
+function clearQA(){
+  history.length=0;
+  histEl.innerHTML='';
+  ansQ.textContent=''; ansA.innerHTML='';
+  answerEl.classList.remove('show');
+  clearBtn.classList.remove('show');
+  qEl.value='';
+  window.scrollTo({top:0,behavior:'smooth'});
+  qEl.focus();
 }
 
 function renderHist(){
